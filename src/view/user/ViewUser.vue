@@ -1,0 +1,1 @@
+<template>View User</template>
