@@ -1,11 +1,13 @@
 <script setup>
 import { reactive,ref,markRaw } from 'vue';
-import { getUserListApi,getUserDeleteApi } from '../../api/user';
+//import { getUserListApi,getUserDeleteApi } from '../../api/user';
+import { getClusterListApi as getListApi,deleteClusterApi as deleteApi,getClusterApi as getApi} from '../../api/cluster.js';
 import { toRefs } from 'vue';
 import { onBeforeMount } from 'vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
-import { CircleCheck } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox, scrollbarProps } from 'element-plus';
+import { CircleCheck,Check, Close } from '@element-plus/icons-vue'
 import AddUser from './Add.vue';
+
 
 const defaultMethod = ref("add")
 
@@ -26,28 +28,30 @@ const loading = ref(true)
 
 const data = reactive({
     items:[],
-    userForm:{
-      username:"",
-      qq:"",
-      address:""
+    itemForm:{
+      id:"",
+      displayName:"",
+      city:"",
+      district:"",
+      kubeconfig:"",
     },
 })
-const getUserListData = () => {
-    getUserListApi().then((Response)=>{
+const getListItem = () => {
+    getListApi().then((Response)=>{
         //调试用：console.log(Response.data.items);
         data.items = Response.data.items;
         loading.value = false;
     })
 }
 //把items从data中解构出来
-const {items,userForm} = toRefs(data)
+const {items,itemForm} = toRefs(data)
 //生命周期的知识点，onBeforeMount是vue3.0新增的生命周期，在组件挂载之前执行
-onBeforeMount(()=>{getUserListData()})
+onBeforeMount(()=>{getListItem()})
 
-const getUserListDelete = (info) => {
+const deleteItem = (info) => {
     //console.log("当前数据",info)
     ElMessageBox.confirm(
-    '正在尝试删除用户，是否继续？',
+    '正在尝试删除集群'+info.id+'，是否继续？',
     '请注意',
     {
       confirmButtonText: '确认',
@@ -57,14 +61,15 @@ const getUserListDelete = (info) => {
     }
   )  .then(() => {
     loading.value = true;
-    getUserDeleteApi(info.id).then((Response)=>{
+    deleteApi(info.id).then((Response)=>{
         //调试用：console.log(Response.data.items);
       ElMessage({
         type:'success',
         message:Response.message,
       })
+      getListItem() //这里面包含了 loading.value = false;
     })
-    loading.value = false;
+
     })
     .catch(() => {
       ElMessage({
@@ -76,28 +81,38 @@ const getUserListDelete = (info) => {
 }
 
 const addUserDiag = ref(false)
-const getUserAdd = () =>{
+//添加
+const addItem = () =>{
   defaultMethod.value = "add"
   addUserDiag.value = true
-  data.userForm = {}
+  data.itemForm = {}
 }
-const getUserModify = (info) =>{
-  defaultMethod.value = "modify"
+//修改
+const edit = (id) =>{
+
   addUserDiag.value = true
-  //因为是引用传递所以子组件会带动父组件的修改
-  data.userForm = info
+  //获取需要修改的ID集群详情
+  defaultMethod.value = "modify"
+  getApi(id).then((Response)=>{
+    data.itemForm = Response.data.item
+    })
+    .catch(()=>{
+    return
+    })
+    
+  console.log("修改的ID",id)
 }
 
 const closeDiag = () => {
   addUserDiag.value = false
-  getUserListData()
+  getListItem()
 }
 </script>
 
 <template>
 
     <div class="mb-4" style="text-align: left;">
-        <el-button @click= "getUserAdd" :text="true" style="  text-shadow: #00000069 1px 1px 1px;">添加用户</el-button>
+        <el-button @click= "addItem" :text="true" style="  text-shadow: #00000069 1px 1px 1px;">添加集群</el-button>
       </div>
       
     <el-table 
@@ -110,21 +125,49 @@ const closeDiag = () => {
     :element-loading-svg="svg"
     class="custom-loading-svg"
     element-loading-svg-view-box="-10, -10, 50, 50"
+   >
 
-    >
-        <el-table-column prop="username" label="Name" width="120" />
-        <el-table-column sortable fixed  prop="id" label="Id" width="70" />
-        <el-table-column prop="qq" label="QQ" width="120" />
-        <el-table-column prop="address" label="Address" width="600" />
+      <el-table-column fixed prop="id" label="集群唯一ID" width="150" >
+              <template #default="scope">
+                <RouterLink v-if="scope.row.clusterStatus === 'Active'" :to="{path:'/cluster/detail',query:{'clusterId':scope.row.id}}">
+                  {{ scope.row.id }}
+                </RouterLink>
+                <span v-else style="color: red;">{{ scope.row.id }}</span>
+              </template>
+            </el-table-column>
+
+        <el-table-column prop="displayName" label="集群昵称" width="150" /> 
+
+        <el-table-column prop="	" label="集群位置" width="230">
+            <template #default="scope">
+                  {{ scope.row.city }} - {{ scope.row.district }}
+              </template>
+        </el-table-column>
+
+        <el-table-column sortable prop="" label="状态" width="80" >
+          <template #default="scope">
+              <el-icon v-if="scope.row.clusterStatus === 'Active'" color="green"><Check /></el-icon>
+              <el-icon v-if="scope.row.clusterStatus === 'Inactive'" color="red"><Close /></el-icon>
+          </template>
+        </el-table-column>   
+
+        <el-table-column align="center" sortable prop="clusterVersion" label="集群版本" width="120" />
+
         <el-table-column fixed="right" label="Operations" min-width="103">
           <template #default="scope">
-            <el-button link type="warning" size="small" @click="getUserModify(scope.row)">编辑</el-button>
-            <el-button @click="getUserListDelete(scope.row)" link type="danger" size="small">删除</el-button>
+            <el-button :disabled="scope.row.clusterStatus !== 'Active'" link type="warning" size="small" @click="edit(scope.row.id)">编辑</el-button>
+            <el-button @click="deleteItem(scope.row)" link type="danger" size="small">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
       
-      <el-dialog destroy-on-close v-model="addUserDiag" title="用户操作" width="500" >
-          <AddUser :user-Form="userForm" :method="defaultMethod" @refresh="closeDiag" ></AddUser>
+      <el-dialog destroy-on-close v-model="addUserDiag" title="集群操作" width="500" >
+          <AddUser :itemForm="itemForm" :method="defaultMethod" @refresh="closeDiag" ></AddUser>
       </el-dialog>
+
 </template>
+
+<style scoped>
+
+
+</style>

@@ -32,7 +32,7 @@ const logout = () => {
 }
 
 const jumpLink = () => {
-    window.location.href = "https://github.com/MoriDreamers/VUE-PROJECT";
+    window.location.href = "https://github.com/MoriDreamers/";
 }
 </script>
 

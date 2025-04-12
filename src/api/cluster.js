@@ -10,12 +10,12 @@ export const getClusterListApi = () => {
 
 export const deleteClusterApi = (id) => { 
     console.log("请求删除的集群ID",id);
-    return request(apiUrl.deleteClusterApi, {id}, "get",2000);
+    return request(apiUrl.deleteClusterApi, {"clusterId":id}, "get",2000);
 }
 
 export const getClusterApi = (id) => { 
     console.log("请求获取的集群ID",id);
-    return request(apiUrl.getClusterApi, {id}, "get",2000);
+    return request(apiUrl.getClusterApi, {"clusterId":id}, "get",2000);
 }
 
 export const addClusterApi = (data) => { 

@@ -84,29 +84,71 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response){
     //在这里对返回的数据进行处理
     //超出2xx范围的状态码都会触发该函数
-    //go后台默认只要请求了就返回201 但是我定义的data.status401为401 所以这里要判断一下
-    if (response.status === 200 && response.data.status !== 401){
-      return Promise.resolve(response)
-    }else if (response.data.status === 401) {
-      //说明token失效
-    ElMessage({
-        message: '您的登录信息已失效，请重新登录.',
-        type: 'warning',
-    })
-    window.localStorage.removeItem(apiHeader.TokenName)
-      //跳转到登录页面 
-    if(router.currentRoute.path!== 'login') {      
-        jmupRouter('login')
-    }
-      return Promise.reject(response)
-
-    }return response;
-    },function(error){ 
-        ElMessage({
-            message: '请求错误，请联系管理员，错误信息为：'+ error.message,
+    // 情况1：正常响应 (status === 200)
+    if (response.status === 200) {
+      // 检查是否有自定义错误状态码
+      if (response.data && response.data.status) {
+        // 情况2：Token失效错误
+        if (response.data.status === 400) {
+          ElMessage({
+            message: '您的登录信息已失效，请重新登录',
+            type: 'warning',
+          });
+          window.localStorage.removeItem(apiHeader.TokenName);
+          if (router.currentRoute.path !== '/login') {
+            router.push('/login');
+          }
+          return Promise.reject(response);
+        }
+        // 情况3：服务器错误
+        else if (response.data.status === 401) {
+          ElMessage({
+            message: '错误: ' + (response.data.message || '无详细错误信息'),
             type: 'error',
-        })
-      return Promise.reject(error);
+          });
+          return Promise.reject(response);
+        }
+      }
+      // 正常返回
+      return Promise.resolve(response);
     }
+
+    // 情况4：其他请求错误 (status !== 200)
+    let errorMessage = '请求错误';
+    if (response.status === 404) {
+      errorMessage = '请求的资源不存在';
+    } else if (response.status === 500) {
+      errorMessage = '服务器内部错误';
+    }
+    
+    ElMessage({
+      message: `${errorMessage}，状态码: ${response.status}`,
+      type: 'error',
+    });
+    return Promise.reject(response);
+  },
+  function (error) {
+    // 处理网络错误或请求未发出等情况
+    let errorMessage = '网络错误，请联系管理员';
+    
+    if (error.response) {
+      // 服务器返回了错误响应
+      errorMessage = `请求错误，状态码: ${error.response.status}`;
+    } else if (error.request) {
+      // 请求已发出但没有收到响应
+      errorMessage = '服务器无响应，请检查网络连接';
+    } else {
+      // 其他错误
+      errorMessage = `错误: ${error.message}`;
+    }
+    
+    ElMessage({
+      message: errorMessage,
+      type: 'error',
+    });
+    
+    return Promise.reject(error);
+  }
+
   )
 
