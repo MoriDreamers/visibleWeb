@@ -1,19 +1,15 @@
 <script setup>
-import { reactive,ref,markRaw } from 'vue';
+import { reactive,ref } from 'vue';
 import { getClusterListApi, getNodeListApi as getListApi} from '../../api/cluster.js';
 import { toRefs } from 'vue';
 import { onBeforeMount } from 'vue';
-import { ElMessage, ElMessageBox, scrollbarProps } from 'element-plus';
-import { CircleCheck,Check, Close } from '@element-plus/icons-vue'
-import { computed } from 'vue';
+import { Check, Close } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router';
 import Edit from './Edit.vue';
 
 //getListItem（clusterId）方法用于获取指定集群的节点列表
-
 //getClusterList方法用于获取集群列表
 
-const defaultMethod = ref("add")
 
 
 //自定义加载动画，专门留空的几行用于定义动画
@@ -149,8 +145,8 @@ const { clusterId, clusterList, editItem, editNodeName } = toRefs(data)
 
         <el-table-column align="center" sortable prop="" label="状态" width="80" >
           <template #default="scope">
-              <el-icon v-if="scope.row.clusterStatus === 'Active'" color="green"><Check /></el-icon>
-              <el-icon v-if="1" color="red"><Close /></el-icon>
+            <el-icon v-if="scope.row.status.conditions[scope.row.status.conditions.length-1].status === 'True'" color="green"><Check /></el-icon>
+              <el-icon v-else color="red"><Close /></el-icon>
           </template>
         </el-table-column>   
 
