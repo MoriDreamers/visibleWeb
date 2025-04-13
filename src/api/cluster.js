@@ -40,7 +40,7 @@ export const getNodeListApi = (clusterId) => {
 }
 
 
-export const updateNodeListApi = (data) => { 
-    console.log("请求添加的集群配置",data);
-    return request(apiUrl.updateNodeListApi, data, "post",2000);
+export const updateNodeListApi = (clusterId,name,item) => { 
+    console.log("更新节点",name);
+    return request(apiUrl.updateNodeListApi,{clusterId,name,item}, "post",2000);
 }
