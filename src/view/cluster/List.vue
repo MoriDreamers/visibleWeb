@@ -37,11 +37,18 @@ const data = reactive({
     },
 })
 const getListItem = () => {
-    getListApi().then((Response)=>{
-        //调试用：console.log(Response.data.items);
-        data.items = Response.data.items;
-        loading.value = false;
-    })
+  loading.value = true;
+  getListApi()
+        .then((Response) => {
+            data.items = Response.data.items;
+        })
+        .catch((error) => {
+            console.error("加载失败:", error);
+            ElMessage.error("加载数据失败");
+        })
+        .finally(() => {
+            loading.value = false; // 确保无论如何都会关闭加载
+        });
 }
 //把items从data中解构出来
 const {items,itemForm} = toRefs(data)
@@ -89,7 +96,6 @@ const addItem = () =>{
 }
 //修改
 const edit = (id) =>{
-
   addUserDiag.value = true
   //获取需要修改的ID集群详情
   defaultMethod.value = "modify"
@@ -153,7 +159,7 @@ const closeDiag = () => {
 
         <el-table-column align="center" sortable prop="clusterVersion" label="集群版本" width="120" />
 
-        <el-table-column fixed="right" label="Operations" min-width="103">
+        <el-table-column fixed="right"  align="center" label="Operations" min-width="103">
           <template #default="scope">
             <el-button :disabled="scope.row.clusterStatus !== 'Active'" link type="warning" size="small" @click="edit(scope.row.id)">编辑</el-button>
             <el-button @click="deleteItem(scope.row)" link type="danger" size="small">删除</el-button>

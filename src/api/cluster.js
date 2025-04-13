@@ -34,9 +34,13 @@ export const getUserLogoutApi = () => {
 }
 
 //节点
-export const getNodeListApi = () => {
+export const getNodeListApi = (clusterId) => {
     console.log("请求获取节点列表");
-    return request(apiUrl.getNodeListApi, {}, "get",2000);
+    return request(apiUrl.getNodeListApi, {"clusterId":clusterId}, "get",2000);
 }
 
 
+export const updateNodeListApi = (data) => { 
+    console.log("请求添加的集群配置",data);
+    return request(apiUrl.updateNodeListApi, data, "post",2000);
+}

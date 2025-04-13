@@ -153,4 +153,4 @@ const rules = reactive({
     flex-direction: row;
 }
 
-</style>
+</style scoped>

@@ -20,6 +20,7 @@ export const apiUrl = {
     updateClusterApi:`${BASE_URL}/api/cluster/update`,
     //节点资源
     getNodeListApi : `${BASE_URL}/api/node/list`,
+    updateNodeListApi : `${BASE_URL}/api/node/update`,
     //命名空间资源
     getNameSpaceListApi : `${BASE_URL}/api/namespace/list`,
     addNameSpaceApi : `${BASE_URL}/api/namespace/add`,
