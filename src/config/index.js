@@ -6,12 +6,7 @@ const BASE_URL =  "http://localhost:8080" //调试本地接口环境
 export const apiUrl = {
 
     apiLogin: `${BASE_URL}/api/auth/login`,
-    apiLogout: "",
-    userGetList: `${BASE_URL}/api/test/userlist`,
-    userDelete:"https://apifoxmock.com/m1/5997652-5686155-default/api/user/delete",
-    userAdd:"http://127.0.0.1:4523/m2/5997652-5686155-default/269645616",
-    userModify:"http://127.0.0.1:4523/m2/5997652-5686155-default/270111859?apifoxApiId=270111859",
-    userLogout:"http://127.0.0.1:4523/m1/5997652-5686155-default/api/user/delete",
+    apiLogout: `${BASE_URL}/api/auth/logout`,
     //集群资源
     getClusterListApi : `${BASE_URL}/api/cluster/list`,
     addClusterApi : `${BASE_URL}/api/cluster/add`,

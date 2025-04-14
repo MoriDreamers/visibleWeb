@@ -23,5 +23,5 @@ export const getUserModifyApi = (object) => {
 
 export const getUserLogoutApi = () => { 
     console.log("请求用户登出");
-    return request(apiUrl.userLogout, {}, "get",2000);
+    return request(apiUrl.apiLogout, {}, "get",2000);
 }

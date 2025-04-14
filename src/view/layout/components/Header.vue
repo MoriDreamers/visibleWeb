@@ -19,9 +19,9 @@ const successBox = (info) => {
   })
 };
 const logout = () => {
+    
     getUserLogoutApi().then((Response) => {
         if (Number(Response.status) === 200) {  // 强制转换为数字
-            
             successBox(Response)  
             window.localStorage.removeItem(apiHeader.TokenName)
             router.replace('/login')
