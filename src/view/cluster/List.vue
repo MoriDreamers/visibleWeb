@@ -42,10 +42,6 @@ const getListItem = () => {
         .then((Response) => {
             data.items = Response.data.items;
         })
-        .catch((error) => {
-            console.error("加载失败:", error);
-            ElMessage.error("加载数据失败");
-        })
         .finally(() => {
             loading.value = false; // 确保无论如何都会关闭加载
         });

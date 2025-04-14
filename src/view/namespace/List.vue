@@ -1,7 +1,7 @@
 <script setup>
 import { reactive,ref } from 'vue';
 import { getClusterListApi} from '../../api/cluster.js';
-import { getNameSpaceListApi as getListApi,addNameSpaceApi as addItemApi} from '../../api/namespace.js';
+import { getNameSpaceListApi as getListApi,addNameSpaceApi as addItemApi ,deleteNameSpaceApi as deleteItemApi} from '../../api/namespace.js';
 import { ElMessage, } from 'element-plus'
 import { toRefs } from 'vue';
 import { onBeforeMount } from 'vue';
@@ -43,8 +43,8 @@ const data = reactive({
     clusterId: "",
     editItem: {},
     editName: "",
-    detailItem: {},
-    detailName: "",
+    deleteItem: {},
+    deleteName: "",
 })
 
 const getListItem = (clusterId) => {
@@ -56,7 +56,8 @@ const getListItem = (clusterId) => {
         loading.value = false;
     })
 }
-
+ 
+// 新增命名空间弹窗
 const createDialog = ref(false)
 const submitCreate = () => {
   loading.value = true
@@ -69,9 +70,40 @@ const submitCreate = () => {
     })  
     createDialog.value = false
     getListItem(data.clusterId)
+
 }
 const crate = () => {
   createDialog.value = true
+}
+//删除命名空间弹窗
+
+const deleteDialog = ref(false)
+
+const deleteHandle = (row) => {
+  console.log("删除ns",row)
+  deleteDialog.value = true
+  data.deleteItem = row
+  data.deleteName = row.metadata.name
+
+}
+
+const submitDelete = () => {
+  loading.value = true
+  console.log("提交删除：",data.deleteName)
+  deleteItemApi(data.clusterId,data.deleteName).then((Response)=>{
+    ElMessage({
+              type:'success',
+              message:Response.message+" 请等待几秒",
+            })
+    })  
+    deleteDialog.value = false
+    getListItem(data.clusterId)
+    setTimeout(() => {
+    getListItem(data.clusterId)
+  }, 2000)
+  setTimeout(() => {
+    getListItem(data.clusterId)
+  }, 6000)
 }
 const edit = (row) =>{
     console.log("编辑NS：",row)
@@ -127,7 +159,7 @@ onBeforeMount(async()=>{
 })
 
 //解构参数以便于使用
-const { clusterId, clusterList, editItem, editName,detailItem,detailName } = toRefs(data)
+const { clusterId, clusterList, editItem, editName,detailItem,detailName,deleteName } = toRefs(data)
 
 </script>
 
@@ -178,7 +210,7 @@ const { clusterId, clusterList, editItem, editName,detailItem,detailName } = toR
         <el-table-column fixed="right" align="center" label="Operations" min-width="103">
           <template #default="scope">
             <!-- row传递时包含完整的对象信息，即后端返回的list对应的list[row],的对象信息，包括metadata、status等，可以直接使用，不需要再次请求API -->
-            <el-button :disabled="scope.row.clusterStatus == ''" link type="warning" size="small" @click="edit(scope.row)">编辑</el-button>
+            <el-button :disabled="scope.row.clusterStatus == ''" link type="warning" size="small" @click="deleteHandle(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -197,6 +229,11 @@ const { clusterId, clusterList, editItem, editName,detailItem,detailName } = toR
       <el-input placeholder="请输入命名空间名称" v-model="editName"></el-input>
       <el-button type="primary" @click="submitCreate" style="margin-top: 10px;">创建</el-button>
   </el-dialog>
+
+  <el-dialog destroy-on-close v-model="deleteDialog" :title="'⚠ 高危操作'" width=400px >
+    <el-input placeholder="请确认要删除的命名空间名称" v-model="deleteName"></el-input>
+    <el-button type="primary" @click="submitDelete" style="margin-top: 10px;" >确认删除</el-button>
+</el-dialog>
 
 </template>
 

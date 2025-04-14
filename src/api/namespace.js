@@ -8,9 +8,9 @@ export const getNameSpaceListApi = (clusterId) => {
     return request(apiUrl.getNameSpaceListApi, {"clusterId":clusterId}, "get",2000);
 }
 
-export const deleteNameSpaceApi = (id) => { 
-    console.log("请求删除的命名空间ID",id);
-    return request(apiUrl.deleteNameSpaceApi, {id}, "get",2000);
+export const deleteNameSpaceApi = (clusterId,name) => { 
+    console.log("请求删除的命名空间ID",name);
+    return request(apiUrl.deleteNameSpaceApi, {clusterId,name}, "get",2000);
 }
 
 export const getNameSpaceApi = (id) => { 
