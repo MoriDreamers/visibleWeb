@@ -1,8 +1,8 @@
 <script setup>
 import { reactive,ref } from 'vue';
 import { getClusterListApi} from '../../api/cluster.js';
-import { getNameSpaceListApi as getListApi} from '../../api/namespace.js';
-
+import { getNameSpaceListApi as getListApi,addNameSpaceApi as addItemApi} from '../../api/namespace.js';
+import { ElMessage, } from 'element-plus'
 import { toRefs } from 'vue';
 import { onBeforeMount } from 'vue';
 import { Check, Close } from '@element-plus/icons-vue'
@@ -57,7 +57,22 @@ const getListItem = (clusterId) => {
     })
 }
 
-
+const createDialog = ref(false)
+const submitCreate = () => {
+  loading.value = true
+  console.log("提交创建：",data.editName)
+  addItemApi(data.clusterId,data.editName).then((Response)=>{
+    ElMessage({
+              type:'success',
+              message:Response.message,
+            })
+    })  
+    createDialog.value = false
+    getListItem(data.clusterId)
+}
+const crate = () => {
+  createDialog.value = true
+}
 const edit = (row) =>{
     console.log("编辑NS：",row)
     data.editItem = row
@@ -119,8 +134,8 @@ const { clusterId, clusterList, editItem, editName,detailItem,detailName } = toR
 <template>
 
   
-    <div style="display: flex;align-items: center;justify-content: space-between;margin-bottom: 10px;">
-        <span style="font-weight: bold;'">命名空间列表</span>
+  <div style="display: flex;align-items: center;justify-content: space-between;margin-bottom: 10px;">
+    <span class="btn01" style="font-weight: bold;color:#000000c9;font-size: 16px;" @click= "crate" >添加命名空间</span>
         <div style="width: 150px;">
             <el-select v-model="clusterId" placeholder="选择集群" @change="getListItem(clusterId)">
                 <el-option v-for="item in clusterList"
@@ -177,9 +192,44 @@ const { clusterId, clusterList, editItem, editName,detailItem,detailName } = toR
       <el-dialog destroy-on-close v-model="detailDialog" :title="'集群:  ' + clusterId +'    &    节点:  ' + detailName" width=70% >
         <Detail :item="detailItem" ></Detail>
     </el-dialog>
+
+    <el-dialog destroy-on-close v-model="createDialog" :title="'添加命名空间'" width=400px >
+      <el-input placeholder="请输入命名空间名称" v-model="editName"></el-input>
+      <el-button type="primary" @click="submitCreate" style="margin-top: 10px;">创建</el-button>
+  </el-dialog>
+
 </template>
 
 <style scoped>
 
+.btn01 {
+  position: relative;
+  display: inline-block;
+  color: black;
+  animation: fadeFlash 1.2s infinite alternate ease-in-out;
+}
 
+@keyframes fadeFlash {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+.btn01::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background-color: black;
+  transition: width 0.1s ease;
+}
+
+.btn01:hover::after {
+  width: 100%;
+}
 </style>

@@ -18,9 +18,9 @@ export const getNameSpaceApi = (id) => {
     return request(apiUrl.getNameSpaceApi, {id}, "get",2000);
 }
 
-export const addNameSpaceApi = (data) => { 
-    console.log("请求添加的命名空间配置",data);
-    return request(apiUrl.addNameSpaceApi, data, "post",2000);
+export const addNameSpaceApi = (clusterId,name) => { 
+    console.log("请求添加的命名空间配置",clusterId,",",name);
+    return request(apiUrl.addNameSpaceApi, {clusterId,name}, "post",2000);
 }
 
 export const updateNameSpaceApi = (data) => { 
