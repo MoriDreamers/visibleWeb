@@ -11,7 +11,7 @@
         <Aside width="250px"></Aside>
           <el-container class = "el-container__el-container">
               <Header></Header>
-              <Main></Main>
+              <Main ></Main>
               <Footer></Footer>
           </el-container>
       </el-container>

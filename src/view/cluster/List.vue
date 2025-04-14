@@ -117,10 +117,12 @@ const closeDiag = () => {
 
 <template>
 
-    <div class="mb-4" style="text-align: left;">
+<!--     <div class="mb-4" style="text-align: left;">
         <el-button @click= "addItem" :text="true" style="  text-shadow: #00000069 1px 1px 1px;">添加集群</el-button>
-      </div>
-      
+      </div> -->
+      <div style="display: flex;align-items: center;justify-content: space-between;margin-bottom: 10px;">
+        <span class="btn01" style="font-weight: bold;color:#000000c9;font-size: 16px;" @click= "addItem" >添加集群</span>
+    </div>
     <el-table 
     stripe  
     :data="items" 
@@ -174,6 +176,34 @@ const closeDiag = () => {
 </template>
 
 <style scoped>
+.btn01 {
+  position: relative;
+  display: inline-block;
+  color: black;
+  animation: fadeFlash 1.2s infinite alternate ease-in-out;
+}
 
+@keyframes fadeFlash {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
 
+.btn01::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background-color: black;
+  transition: width 0.1s ease;
+}
+
+.btn01:hover::after {
+  width: 100%;
+}
 </style>

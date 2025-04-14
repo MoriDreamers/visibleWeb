@@ -6,7 +6,7 @@ import { onBeforeMount } from 'vue';
 import { Check, Close } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router';
 import Edit from './Edit.vue';
-
+import Detail from './Detail.vue';
 //getListItem（clusterId）方法用于获取指定集群的节点列表
 //getClusterList方法用于获取集群列表
 
@@ -31,6 +31,8 @@ const value1 = ref(false)
 
 const editDialog = ref(false)
 
+const detailDialog = ref(false)
+
 const route = useRoute()
 
 const data = reactive({
@@ -38,7 +40,9 @@ const data = reactive({
     clusterList: [],
     clusterId: "",
     editItem: {},
-    editNodeName: ""
+    editNodeName: "",
+    detailItem: {},
+    detailNodeName: "",
 })
 
 const getListItem = (clusterId) => {
@@ -53,11 +57,17 @@ const getListItem = (clusterId) => {
 
 
 const edit = (row) =>{
-    editDialog.value = true
     console.log("编辑节点：",row)
     data.editItem = row
     data.editNodeName = row.metadata.name
     editDialog.value = true
+}
+
+const detail = (row) =>{
+    console.log("查看节点详情：",row)
+    data.detailItem = row
+    data.detailNodeName = row.metadata.name
+    detailDialog.value = true
 }
 
 /* 搜索功能
@@ -100,7 +110,7 @@ onBeforeMount(async()=>{
 })
 
 //解构参数以便于使用
-const { clusterId, clusterList, editItem, editNodeName } = toRefs(data)
+const { clusterId, clusterList, editItem, editNodeName,detailItem,detailNodeName } = toRefs(data)
 
 </script>
 
@@ -135,7 +145,7 @@ const { clusterId, clusterList, editItem, editNodeName } = toRefs(data)
       
       <el-table-column fixed prop="" label="主机名" width="150" >
               <template #default="scope">
-                <el-button link type="primary" @click="edit(scope.row)">{{ scope.row.metadata.name }}</el-button>
+                <el-button link type="primary" @click="detail(scope.row)">{{ scope.row.metadata.name }}</el-button>
               </template>
             </el-table-column>
 
@@ -176,6 +186,9 @@ const { clusterId, clusterList, editItem, editNodeName } = toRefs(data)
           <Edit :itemForm="editItem" :clusterId="data.clusterId" @refresh="getListItem(clusterId)" ></Edit>
       </el-dialog>
 
+      <el-dialog destroy-on-close v-model="detailDialog" :title="'集群:  ' + clusterId +'    &    节点:  ' + detailNodeName" width=70% >
+        <Detail :item="detailItem" ></Detail>
+    </el-dialog>
 </template>
 
 <style scoped>

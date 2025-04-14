@@ -3,9 +3,9 @@ import request from "./index.js";
 import { apiUrl } from '../config/index.js';
 
 //命名空间
-export const getNameSpaceListApi = () => {
+export const getNameSpaceListApi = (clusterId) => {
     console.log("请求获取命名空间列表");
-    return request(apiUrl.getNameSpaceListApi, {}, "get",2000);
+    return request(apiUrl.getNameSpaceListApi, {"clusterId":clusterId}, "get",2000);
 }
 
 export const deleteNameSpaceApi = (id) => { 

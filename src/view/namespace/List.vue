@@ -1,16 +1,21 @@
 <script setup>
-import { reactive,ref,markRaw } from 'vue';
-import { getUserListApi,getUserDeleteApi } from '../../api/user';
+import { reactive,ref } from 'vue';
+import { getClusterListApi} from '../../api/cluster.js';
+import { getNameSpaceListApi as getListApi} from '../../api/namespace.js';
+
 import { toRefs } from 'vue';
 import { onBeforeMount } from 'vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
-import { CircleCheck } from '@element-plus/icons-vue'
-import AddUser from './Add.vue';
+import { Check, Close } from '@element-plus/icons-vue'
+import { useRoute } from 'vue-router';
+import Edit from './Edit.vue';
+import Detail from './Detail.vue';
+//getListItem（clusterId）方法用于获取指定集群的节点列表
+//getClusterList方法用于获取集群列表
 
-const defaultMethod = ref("add")
+
 
 //自定义加载动画，专门留空的几行用于定义动画
-
+ 
 const svg = `
         <path class="path" d="
           M 30 15
@@ -24,85 +29,113 @@ const svg = `
         
 const loading = ref(true)
 
+const value1 = ref(false)
+
+const editDialog = ref(false)
+
+const detailDialog = ref(false)
+
+const route = useRoute()
+
 const data = reactive({
-    items:[],
-    userForm:{
-      username:"",
-      qq:"",
-      address:""
-    },
+    items: [],
+    clusterList: [],
+    clusterId: "",
+    editItem: {},
+    editName: "",
+    detailItem: {},
+    detailName: "",
 })
-const getUserListData = () => {
-    getUserListApi().then((Response)=>{
+
+const getListItem = (clusterId) => {
+    loading.value = true
+    getListApi(clusterId).then((Response)=>{
         //调试用：console.log(Response.data.items);
         data.items = Response.data.items;
+        //我们查询的指定集群的node列表放到了data.items中，然后绑定到表格上最后渲染出来
         loading.value = false;
     })
 }
-//把items从data中解构出来
-const {items,userForm} = toRefs(data)
-//生命周期的知识点，onBeforeMount是vue3.0新增的生命周期，在组件挂载之前执行
-onBeforeMount(()=>{getUserListData()})
 
-const getUserListDelete = (info) => {
-    //console.log("当前数据",info)
-    ElMessageBox.confirm(
-    '正在尝试删除用户，是否继续？',
-    '请注意',
-    {
-      confirmButtonText: '确认',
-      cancelButtonText: '取消',
-      type: 'warning',
-      icon: markRaw(CircleCheck),
-    }
-  )  .then(() => {
-    loading.value = true;
-    getUserDeleteApi(info.id).then((Response)=>{
-        //调试用：console.log(Response.data.items);
-      ElMessage({
-        type:'success',
-        message:Response.message,
-      })
-    })
-    loading.value = false;
-    })
-    .catch(() => {
-      ElMessage({
-        type: 'info',
-        message: '用户取消操作',
-      })
-    })
-    
+
+const edit = (row) =>{
+    console.log("编辑NS：",row)
+    data.editItem = row
+    data.editName = row.metadata.name
+    editDialog.value = true
 }
 
-const addUserDiag = ref(false)
-const getUserAdd = () =>{
-  defaultMethod.value = "add"
-  addUserDiag.value = true
-  data.userForm = {}
-}
-const getUserModify = (info) =>{
-  defaultMethod.value = "modify"
-  addUserDiag.value = true
-  //因为是引用传递所以子组件会带动父组件的修改
-  data.userForm = info
+const detail = (row) =>{
+    console.log("查看NS详情：",row)
+    data.detailItem = row
+    data.detailName = row.metadata.name
+    detailDialog.value = true
 }
 
-const closeDiag = () => {
-  addUserDiag.value = false
-  getUserListData()
-}
+/* 搜索功能
+const search = ref("")
+
+const filterTableData = computed(() =>
+  data.items.filter(
+    (item) =>
+      !search.value ||
+      item.metadata.name.toLowerCase().includes(search.value.toLowerCase()) || 
+      item.status.addresses[0].address.toLowerCase().includes(search.value.toLowerCase()) 
+  )
+)
+ */
+// 异步转成同步
+const getClusterList = async() => {
+    await getClusterListApi().then(
+        (res) => {
+            data.clusterList = res.data.items
+        }
+
+    )
+
+  }
+onBeforeMount(async()=>{
+    // 1、查询集群列表
+    // 2、如果没有指定则使用默认值进行获取集群列表
+    // 3、如果指定了集群，就直接查询当前集群的节点列表
+    // 4、切换了集群之后应重新获取集群的列表
+    // 5、集群不可用，则不可选
+
+    await getClusterList()
+    const defaultClusterSelected = data.clusterList[0].id
+    // 获取当前请求是否携带了集群ID的参数
+    const nowClusterId = route.query.clusterId
+    data.clusterId = nowClusterId ? nowClusterId : defaultClusterSelected
+
+    getListItem(data.clusterId)
+    //调试用 console.log("data内容：",data)
+})
+
+//解构参数以便于使用
+const { clusterId, clusterList, editItem, editName,detailItem,detailName } = toRefs(data)
+
 </script>
 
 <template>
 
-    <div class="mb-4" style="text-align: left;">
-        <el-button @click= "getUserAdd" :text="true" style="  text-shadow: #00000069 1px 1px 1px;">添加用户</el-button>
-      </div>
-      
+  
+    <div style="display: flex;align-items: center;justify-content: space-between;margin-bottom: 10px;">
+        <span style="font-weight: bold;'">命名空间列表</span>
+        <div style="width: 150px;">
+            <el-select v-model="clusterId" placeholder="选择集群" @change="getListItem(clusterId)">
+                <el-option v-for="item in clusterList"
+                :key="item.id"
+                :label="item.id"
+                :value="item.id"
+                :disabled="item.status == 'InActive'"
+                />
+            </el-select>
+          </div>
+       <!-- 搜索功能 <el-input v-model="search" size="small" placeholder="搜索" style="width: 200px;margin-left:20px;height:32px;"  /> -->
+    </div>
     <el-table 
     stripe  
-    :data="items" 
+    :data="data.items" 
     style="width: 100%" 
     v-loading="loading"  
 
@@ -110,21 +143,43 @@ const closeDiag = () => {
     :element-loading-svg="svg"
     class="custom-loading-svg"
     element-loading-svg-view-box="-10, -10, 50, 50"
+   >
+      
+      <el-table-column fixed prop="" label="名称" width="150" >
+              <template #default="scope">
+                <el-button link type="primary" @click="detail(scope.row)">{{ scope.row.metadata.name }}</el-button>
+              </template>
+            </el-table-column>
 
-    >
-        <el-table-column prop="username" label="Name" width="120" />
-        <el-table-column sortable fixed  prop="id" label="Id" width="70" />
-        <el-table-column prop="qq" label="QQ" width="120" />
-        <el-table-column prop="address" label="Address" width="600" />
-        <el-table-column fixed="right" label="Operations" min-width="103">
+        <el-table-column prop="metadata.creationTimestamp" label="创建时间" width="200" sortable /> 
+
+        <el-table-column align="center" sortable prop="" label="状态" width="80" >
           <template #default="scope">
-            <el-button link type="warning" size="small" @click="getUserModify(scope.row)">编辑</el-button>
-            <el-button @click="getUserListDelete(scope.row)" link type="danger" size="small">删除</el-button>
+            <el-icon v-if="scope.row.status.phase === 'Active'" color="green"><Check /></el-icon>
+              <el-icon v-else color="red"><Close /></el-icon>
+          </template>
+        </el-table-column>   
+
+        <el-table-column fixed="right" align="center" label="Operations" min-width="103">
+          <template #default="scope">
+            <!-- row传递时包含完整的对象信息，即后端返回的list对应的list[row],的对象信息，包括metadata、status等，可以直接使用，不需要再次请求API -->
+            <el-button :disabled="scope.row.clusterStatus == ''" link type="warning" size="small" @click="edit(scope.row)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
-      
-      <el-dialog destroy-on-close v-model="addUserDiag" title="用户操作" width="500" >
-          <AddUser :user-Form="userForm" :method="defaultMethod" @refresh="closeDiag" ></AddUser>
+
+     <!--  表格点击行 → 设置 data.editItem → 传递给子组件的 itemForm -->
+
+      <el-dialog destroy-on-close v-model="editDialog" :title="'正在编辑集群:  ' + clusterId +'    &    节点:  ' + editName" width=70% >
+          <Edit :itemForm="editItem" :clusterId="data.clusterId" @refresh="getListItem(clusterId)" ></Edit>
       </el-dialog>
+
+      <el-dialog destroy-on-close v-model="detailDialog" :title="'集群:  ' + clusterId +'    &    节点:  ' + detailName" width=70% >
+        <Detail :item="detailItem" ></Detail>
+    </el-dialog>
 </template>
+
+<style scoped>
+
+
+</style>

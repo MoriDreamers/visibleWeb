@@ -3,7 +3,6 @@
   import { ElMessage,ElNotification } from 'element-plus'
   import { updateNodeListApi } from '../../api/cluster.js';
   import { objectToList,deleteTabRow,listToObject } from '../../utils/utils.js';
-import { clusterRoutes } from '../../router/cluster';
 
   //！！！！接下来包括表格内的数据都几乎和const定义的变量进行了双向绑定，也就是说这些变量的值会实时跟着表格里的值变化，不用去关心逻辑
 
