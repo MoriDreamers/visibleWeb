@@ -3,6 +3,7 @@
   import {getUserAddApi,getUserModifyApi} from '../../api/user.js'
   import { ElMessage,ElNotification } from 'element-plus'
   import { onBeforeMount } from 'vue';
+  import { list } from '../components/List.vue'
 
   const waringBox = () => {
     ElNotification({
@@ -17,7 +18,7 @@
       type:String,
       default: "add"
     },
-      userForm:{
+      userForm:{ 
         type:Object,
       },
   })
@@ -112,6 +113,7 @@ const rules = reactive({
     <el-button type="primary" @click="submitForm" >
       {{ props.method == "add"? "增加" : "修改" }}
     </el-button>
+    <list></list>
   </div>
 </template>
 

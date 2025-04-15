@@ -12,20 +12,6 @@ import Detail from './Detail.vue';
 
 
 
-//自定义加载动画，专门留空的几行用于定义动画
-
-const svg = `
-        <path class="path" d="
-          M 30 15
-          L 28 17
-          M 25.61 25.61
-          A 15 15, 0, 0, 1, 15 30
-          A 15 15, 0, 1, 1, 27.99 7.5
-          L 15 15
-        " style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>
-        `
-        
-const loading = ref(true)
 
 const value1 = ref(false)
 
@@ -46,12 +32,12 @@ const data = reactive({
 })
 
 const getListItem = (clusterId) => {
-    loading.value = true
+
     getListApi(clusterId).then((Response)=>{
         //调试用：console.log(Response.data.items);
         data.items = Response.data.items;
         //我们查询的指定集群的node列表放到了data.items中，然后绑定到表格上最后渲染出来
-        loading.value = false;
+
     })
 }
 
@@ -135,12 +121,7 @@ const { clusterId, clusterList, editItem, editNodeName,detailItem,detailNodeName
     stripe  
     :data="data.items" 
     style="width: 100%" 
-    v-loading="loading"  
 
-    element-loading-text="一二三睦头人..."
-    :element-loading-svg="svg"
-    class="custom-loading-svg"
-    element-loading-svg-view-box="-10, -10, 50, 50"
    >
       
       <el-table-column fixed prop="" label="主机名" width="150" >

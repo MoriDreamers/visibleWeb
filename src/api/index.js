@@ -8,9 +8,11 @@
 */
 import axios from 'axios'
 import { apiHeader } from '../config'
-import { jmupRouter } from '../router'
 import router from '../router/index.js'
-import { ElMessage } from 'element-plus'
+import { ElMessage,ElLoading } from 'element-plus'
+import { ref } from 'vue'
+
+let loadingInstance = ref()
 
 const request = (url = '',data = {} , method , timeout = 2000) =>{ //默认值写到接受参数里
     return new Promise((resolve, reject) => {
@@ -50,6 +52,12 @@ axios.defaults.timeout = 1000; //超时时间
 
 //这个是请求级别的拦截器，之前的router守卫是页面拦截器
 axios.interceptors.request.use(function (config) {
+  
+    loadingInstance.value = ElLoading.service({
+      text: '123睦头人...',
+      background: 'rgba(0, 0, 0, 0)',
+    })
+
     //在发送之前添加一点功能
     console.log('这是请求拦截器',config)
     
@@ -98,6 +106,7 @@ axios.interceptors.response.use(function (response){
           if (router.currentRoute.path !== '/login') {
             router.push('/login');
           }
+          loadingInstance.value.close()
           return Promise.reject(response);
         }
         // 情况3：服务器错误
@@ -106,9 +115,12 @@ axios.interceptors.response.use(function (response){
             message: '错误: ' + (response.data.message || '无详细错误信息'),
             type: 'error',
           });
+          loadingInstance.value.close()
           return Promise.reject(response);
+          
         }
       }
+      loadingInstance.value.close()
       // 正常返回
       return Promise.resolve(response);
     }
@@ -125,6 +137,7 @@ axios.interceptors.response.use(function (response){
       message: `${errorMessage}，状态码: ${response.status}`,
       type: 'error',
     });
+    loadingInstance.value.close()
     return Promise.reject(response);
   },
   

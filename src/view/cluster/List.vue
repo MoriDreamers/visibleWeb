@@ -11,20 +11,6 @@ import AddUser from './Add.vue';
 
 const defaultMethod = ref("add")
 
-//自定义加载动画，专门留空的几行用于定义动画
-
-const svg = `
-        <path class="path" d="
-          M 30 15
-          L 28 17
-          M 25.61 25.61
-          A 15 15, 0, 0, 1, 15 30
-          A 15 15, 0, 1, 1, 27.99 7.5
-          L 15 15
-        " style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>
-        `
-        
-const loading = ref(true)
 
 const data = reactive({
     items:[],
@@ -37,13 +23,13 @@ const data = reactive({
     },
 })
 const getListItem = () => {
-  loading.value = true;
+
   getListApi()
         .then((Response) => {
             data.items = Response.data.items;
         })
         .finally(() => {
-            loading.value = false; // 确保无论如何都会关闭加载
+
         });
 }
 //把items从data中解构出来
@@ -63,14 +49,14 @@ const deleteItem = (info) => {
       icon: markRaw(CircleCheck),
     }
   )  .then(() => {
-    loading.value = true;
+
     deleteApi(info.id).then((Response)=>{
         //调试用：console.log(Response.data.items);
       ElMessage({
         type:'success',
         message:Response.message,
       })
-      getListItem() //这里面包含了 loading.value = false;
+      getListItem() 
     })
 
     })
@@ -123,12 +109,9 @@ const closeDiag = () => {
     stripe  
     :data="items" 
     style="width: 100%" 
-    v-loading="loading"  
 
-    element-loading-text="一二三睦头人..."
-    :element-loading-svg="svg"
-    class="custom-loading-svg"
-    element-loading-svg-view-box="-10, -10, 50, 50"
+
+
    >
 
       <el-table-column fixed prop="id" label="集群唯一ID" width="150" >

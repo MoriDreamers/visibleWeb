@@ -9,25 +9,13 @@ import { Check, Close } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router';
 import Edit from './Edit.vue';
 import Detail from './Detail.vue';
+import List  from '../components/List.vue'
 //getListItem（clusterId）方法用于获取指定集群的节点列表
 //getClusterList方法用于获取集群列表
 
 
-
-//自定义加载动画，专门留空的几行用于定义动画
- 
-const svg = `
-        <path class="path" d="
-          M 30 15
-          L 28 17
-          M 25.61 25.61
-          A 15 15, 0, 0, 1, 15 30
-          A 15 15, 0, 1, 1, 27.99 7.5
-          L 15 15
-        " style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>
-        `
         
-const loading = ref(true)
+
 
 const value1 = ref(false)
 
@@ -48,19 +36,19 @@ const data = reactive({
 })
 
 const getListItem = (clusterId) => {
-    loading.value = true
+
     getListApi(clusterId).then((Response)=>{
         //调试用：console.log(Response.data.items);
         data.items = Response.data.items;
         //我们查询的指定集群的node列表放到了data.items中，然后绑定到表格上最后渲染出来
-        loading.value = false;
+
     })
 }
  
 // 新增命名空间弹窗
 const createDialog = ref(false)
 const submitCreate = () => {
-  loading.value = true
+
   console.log("提交创建：",data.editName)
   addItemApi(data.clusterId,data.editName).then((Response)=>{
     ElMessage({
@@ -88,7 +76,6 @@ const deleteHandle = (row) => {
 }
 
 const submitDelete = () => {
-  loading.value = true
   console.log("提交删除：",data.deleteName)
   deleteItemApi(data.clusterId,data.deleteName).then((Response)=>{
     ElMessage({
@@ -184,12 +171,7 @@ const { clusterId, clusterList, editItem, editName,detailItem,detailName,deleteN
     stripe  
     :data="data.items" 
     style="width: 100%" 
-    v-loading="loading"  
 
-    element-loading-text="一二三睦头人..."
-    :element-loading-svg="svg"
-    class="custom-loading-svg"
-    element-loading-svg-view-box="-10, -10, 50, 50"
    >
       
       <el-table-column fixed prop="" label="名称" width="150" >
@@ -227,6 +209,20 @@ const { clusterId, clusterList, editItem, editName,detailItem,detailName,deleteN
 
     <el-dialog destroy-on-close v-model="createDialog" :title="'添加命名空间'" width=400px >
       <el-input placeholder="请输入命名空间名称" v-model="editName"></el-input>
+      <List title="测试">
+        <template #headerOptins>
+          <div style="width: 150px;">
+            <el-select v-model="clusterId" placeholder="选择集群" @change="getListItem(clusterId)">
+                <el-option v-for="item in clusterList"
+                :key="item.id"
+                :label="item.id"
+                :value="item.id"
+                :disabled="item.status == 'InActive'"
+                />
+            </el-select>
+          </div>
+        </template>
+      </List>
       <el-button type="primary" @click="submitCreate" style="margin-top: 10px;">创建</el-button>
   </el-dialog>
 
