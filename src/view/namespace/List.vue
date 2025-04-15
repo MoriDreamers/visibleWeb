@@ -10,6 +10,7 @@ import { useRoute } from 'vue-router';
 import Edit from './Edit.vue';
 import Detail from './Detail.vue';
 import List  from '../components/List.vue'
+import ClusterAndNamespaceSelector  from '../components/ClusterAndNamespaceSelector.vue'
 //getListItem（clusterId）方法用于获取指定集群的节点列表
 //getClusterList方法用于获取集群列表
 
@@ -207,20 +208,11 @@ const { clusterId, clusterList, editItem, editName,detailItem,detailName,deleteN
         <Detail :item="detailItem" ></Detail>
     </el-dialog>
 
-    <el-dialog destroy-on-close v-model="createDialog" :title="'添加命名空间'" width=400px >
+    <el-dialog destroy-on-close v-model="createDialog" :title="'添加命名空间'" width=900px >
       <el-input placeholder="请输入命名空间名称" v-model="editName"></el-input>
       <List title="测试">
         <template #headerOptins>
-          <div style="width: 150px;">
-            <el-select v-model="clusterId" placeholder="选择集群" @change="getListItem(clusterId)">
-                <el-option v-for="item in clusterList"
-                :key="item.id"
-                :label="item.id"
-                :value="item.id"
-                :disabled="item.status == 'InActive'"
-                />
-            </el-select>
-          </div>
+          <ClusterAndNamespaceSelector @namespaceChangedRollback="getListItem(clusterId)"></ClusterAndNamespaceSelector>
         </template>
       </List>
       <el-button type="primary" @click="submitCreate" style="margin-top: 10px;">创建</el-button>

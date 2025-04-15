@@ -21,7 +21,7 @@
         <div>
             <span class="btn01" style="font-weight: bold;color:#000000c9;font-size: 16px;" @click= "crate" >{{props.title}}</span>
         </div>
-        <div>
+        <div style="display: flex;align-items: center;">
             <slot name="headerOptins"></slot>
         </div>
     </div>
