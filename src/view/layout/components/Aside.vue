@@ -75,7 +75,8 @@ const colorEgg = () => {
                     <span>{{ subMenu.title }}</span>
                   </template>
                   <template v-if="subMenu.items">
-                    <el-menu-item v-for="item in subMenu.items" :key="subMenu.index" :index="subMenu.index">
+                    <el-menu-item v-for="item in subMenu.items" :key="item.index" :index="item.index">
+
                       <template #title>
                         <span>{{ item.title }}</span>
                       </template>
