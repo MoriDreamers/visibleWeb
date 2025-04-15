@@ -14,7 +14,6 @@ export const MenuConfig = () => [
                 index:"/cluster/list",
                 title:"集群列表",
             },
-            //查看权限
             {
                 index:"/node/list",
                 title:"查看节点",
@@ -25,6 +24,80 @@ export const MenuConfig = () => [
             },
         ]
     },
+        //调度
+        {
+            title:"资源调度",
+            index:"/schedule",
+            icon:"Operation",
+            subMenu: [
+                {
+                    title: "Pod",
+                    index: "/pod/list",
+                    items: [
+                        {
+                            index: "/pod/list",
+                            title: "查看列表"
+                        }
+                    ]
+                },
+                {
+                    title: "Deployment",
+                    index: "/deployment/list",
+                    items: [
+                        {
+                            index: "/deployment/list",
+                            title: "查看"
+                        },
+                        {
+                            index: "/deployment/add",
+                            title: "创建"
+                        }
+                    ]
+                },
+                {
+                    title: "StatefulSet",
+                    index: "/statefulset/list",
+                    items: [
+                        {
+                            index: "/statefulset/list",
+                            title: "查看"
+                        },
+                        {
+                            index: "/statefulset/add",
+                            title: "创建"
+                        }
+                    ]
+                },
+                {
+                    title: "DaemonSet",
+                    index: "/daemonset/list",
+                    items: [
+                        {
+                            index: "/daemonset/list",
+                            title: "查看"
+                        },
+                        {
+                            index: "/daemonset/add",
+                            title: "创建"
+                        }
+                    ]
+                },
+                {
+                    title: "CronJob",
+                    index: "/cronjob/list",
+                    items: [
+                        {
+                            index: "/cronjob/list",
+                            title: "查看"
+                        },
+                        {
+                            index: "/cronjob/add",
+                            title: "创建"
+                        }
+                    ]
+                }
+            ]
+        },
     //产品管理
     /*{
         title:"资产管理",

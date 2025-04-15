@@ -7,8 +7,8 @@ import { toRefs } from 'vue';
 import { onBeforeMount } from 'vue';
 import { Check, Close } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router';
-import Edit from './Edit.vue';
-import Detail from './Detail.vue';
+/* import Edit from './Edit.vue';
+import Detail from './Detail.vue'; */
 import List  from '../components/List.vue'
 import ClusterAndNamespaceSelector  from '../components/ClusterAndNamespaceSelector.vue'
 //getListItem（clusterId）方法用于获取指定集群的节点列表
@@ -93,7 +93,7 @@ const submitDelete = () => {
     getListItem(data.clusterId)
   }, 6000)
 }
-const edit = (row) =>{
+/* const edit = (row) =>{
     console.log("编辑NS：",row)
     data.editItem = row
     data.editName = row.metadata.name
@@ -105,7 +105,7 @@ const detail = (row) =>{
     data.detailItem = row
     data.detailName = row.metadata.name
     detailDialog.value = true
-}
+} */
 
 /* 搜索功能
 const search = ref("")
@@ -177,7 +177,8 @@ const { clusterId, clusterList, editItem, editName,detailItem,detailName,deleteN
       
       <el-table-column fixed prop="" label="名称" width="150" >
               <template #default="scope">
-                <el-button link type="primary" @click="detail(scope.row)">{{ scope.row.metadata.name }}</el-button>
+                <!-- <el-button link type="primary" @click="detail(scope.row)">{{ scope.row.metadata.name }}</el-button> -->
+                <el-button link type="primary" >{{ scope.row.metadata.name }}</el-button>
               </template>
             </el-table-column>
 
@@ -200,14 +201,14 @@ const { clusterId, clusterList, editItem, editName,detailItem,detailName,deleteN
 
      <!--  表格点击行 → 设置 data.editItem → 传递给子组件的 itemForm -->
 
-      <el-dialog destroy-on-close v-model="editDialog" :title="'正在编辑集群:  ' + clusterId +'    &    节点:  ' + editName" width=70% >
+<!--       <el-dialog destroy-on-close v-model="editDialog" :title="'正在编辑集群:  ' + clusterId +'    &    节点:  ' + editName" width=70% >
           <Edit :itemForm="editItem" :clusterId="data.clusterId" @refresh="getListItem(clusterId)" ></Edit>
       </el-dialog>
 
       <el-dialog destroy-on-close v-model="detailDialog" :title="'集群:  ' + clusterId +'    &    节点:  ' + detailName" width=70% >
         <Detail :item="detailItem" ></Detail>
     </el-dialog>
-
+ -->
     <el-dialog destroy-on-close v-model="createDialog" :title="'添加命名空间'" width=900px >
       <el-input placeholder="请输入命名空间名称" v-model="editName"></el-input>
       <List title="测试">

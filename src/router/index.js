@@ -4,6 +4,7 @@ import { apiHeader } from '../config'
 import { userRouter } from './user.js'
 import { clusterRoutes } from './cluster.js'
 import { namespaceRoutes }from  './namespace.js'
+import {podRoutes, deploymentRoutes, statefulsetRoutes, daemonsetRoutes, cronjobRoutes} from './schedule.js'
 import { nodeRoutes }from './node.js'
 export const jmupRouter=(url) =>{
     router.replace(url)
@@ -20,7 +21,11 @@ const routes = [
     clusterRoutes,
     nodeRoutes,
     namespaceRoutes,
-    
+    podRoutes,
+    deploymentRoutes,
+    statefulsetRoutes,
+    cronjobRoutes,
+    daemonsetRoutes,
     {path: "/", redirect: "/home" }, // 根路径重定向到 /home
     {path:"/home",component:Layout},
     {path:"/login",component:Login},
