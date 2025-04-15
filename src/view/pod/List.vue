@@ -69,12 +69,22 @@ const rollback = (clusterId, namespace) => {
 const showDetailDialog = ref(false);
 
 const detail = (row) => {
-  showDetailDialog.value = true;
-  const yamlData = objToYaml(row);
+  const item = JSON.parse(JSON.stringify(row));
+  console.log(item);
+  delete item.metadata.managedFields;
+  //补充client-go省略的数据
+  const itemtemp = {
+    apiVersion: "v1",
+    kind: "Pod",
+    metadata: item.metadata,
+    spec: item.spec,
+  };
+  const yamlData = objToYaml(itemtemp);
   data.yamlItem = yamlData;
+  showDetailDialog.value = true;
 }
 
-const {showItem,yamlItem} = toRefs(data);
+const {yamlItem} = toRefs(data);
 </script>
 
 <template>
@@ -148,7 +158,7 @@ const {showItem,yamlItem} = toRefs(data);
       v-model="yamlItem"
       >
       </CodeMirror>
-      <el-button type="primary" @click="submitDelete" style="margin-top: 10px;" >确认删除</el-button>
+<!--       <el-button type="primary" @click="" style="margin-top: 10px;" >确认</el-button> -->
   </el-dialog>
 </template>
 

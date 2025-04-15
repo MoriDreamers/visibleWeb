@@ -26,9 +26,9 @@ const props = defineProps({
 
 <template>
     <Codemirror 
-        v-mode="code"
+        v-model="code"
         :extensions="extensions"
-        :placeholder="placeHolderMessage"
+        :placeholder="props.placeholder"
         :style="{height: props.height, width: props.width, border: '1px dashed grey;'}"
         class="codemirror"
     />
