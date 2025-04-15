@@ -7,6 +7,9 @@
       type:String,
       default: "请传入数据"
     },
+    button:{
+      type:String,
+    },
       userForm:{
         type:Object,
       },
@@ -19,7 +22,8 @@
   
   <div style="display: flex;align-items: center;justify-content: space-between;margin-bottom: 10px;">
         <div>
-            <span class="btn01" style="font-weight: bold;color:#000000c9;font-size: 16px;" @click= "crate" >{{props.title}}</span>
+          <span class="btn01" style="font-weight: bold;color:#000000c9;font-size: 16px;" v-if = "props.button === 'yes'" @click= "" >{{props.title}}</span>
+          <span style="font-weight: bold;color:#000000c9;font-size: 16px;" v-else >{{props.title}}</span>
         </div>
         <div style="display: flex;align-items: center;">
             <slot name="headerOptins"></slot>

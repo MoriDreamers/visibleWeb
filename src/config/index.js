@@ -21,8 +21,11 @@ export const apiUrl = {
     addNameSpaceApi : `${BASE_URL}/api/namespace/add`,
     deleteNameSpaceApi : `${BASE_URL}/api/namespace/delete`,
     getNameSpaceApi : `${BASE_URL}/api/namespace/get`,  
-    updateNameSpaceApi:`${BASE_URL}/api/namespace/update`    
-    
+    updateNameSpaceApi:`${BASE_URL}/api/namespace/update`,
+    //POD资源
+    getPodListApi: `${BASE_URL}/api/pod/list`,
+    getPodApi : `${BASE_URL}/api/pod/get`,
+    deletePodApi : `${BASE_URL}/api/pod/delete`,
 
 }
 
