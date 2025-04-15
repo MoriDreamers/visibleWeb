@@ -1,3 +1,5 @@
+import yaml from 'js-yaml'
+
 export const objectToList=(obj)=>{
     let list = []
     if (obj == null) {
@@ -49,4 +51,14 @@ export const listToObject=(list)=>{
 export const deleteTabRow = (list, index) => {
     //删除表格里的某一行（index为行号）
     list.splice(index, 1)
+}
+
+export const objToYaml = (obj) => {
+    let yamltemp = null
+    try {
+        yamltemp = yaml.dump(obj)
+    } catch (e) {
+        yamltemp = `Error: ${e.message}`
+    }
+    return yamltemp
 }

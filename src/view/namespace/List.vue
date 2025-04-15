@@ -194,7 +194,7 @@ const { clusterId, clusterList, editItem, editName,detailItem,detailName,deleteN
         <el-table-column fixed="right" align="center" label="Operations" min-width="103">
           <template #default="scope">
             <!-- row传递时包含完整的对象信息，即后端返回的list对应的list[row],的对象信息，包括metadata、status等，可以直接使用，不需要再次请求API -->
-            <el-button :disabled="scope.row.clusterStatus == ''" link type="warning" size="small" @click="deleteHandle(scope.row)">删除</el-button>
+            <el-button :disabled="scope.row.clusterStatus == ''" link type="danger" size="small" @click="deleteHandle(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

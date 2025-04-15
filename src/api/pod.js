@@ -9,7 +9,7 @@ export const getPodListApi = (clusterId,namespace) => {
 }
 export const deletePodApi = (clusterId,name,namespace) => { 
     console.log("请求删除的命名空间ID",name,namespace);
-    return request(apiUrl.deleteNamePodApi, {clusterId,name,namespace}, "post",2000);
+    return request(apiUrl.deletePodApi, {clusterId,name,namespace}, "post",2000);
 }
 export const getPodApi = (clusterId,name,namespace) => { 
     console.log("请求获取的命名空间ID",clusterId,name,namespace);
