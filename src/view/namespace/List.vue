@@ -178,7 +178,7 @@ const { clusterId, clusterList, editItem, editName,detailItem,detailName,deleteN
       <el-table-column fixed prop="" label="名称" width="150" >
               <template #default="scope">
                 <!-- <el-button link type="primary" @click="detail(scope.row)">{{ scope.row.metadata.name }}</el-button> -->
-                <el-button link type="primary" >{{ scope.row.metadata.name }}</el-button>
+                <span>{{ scope.row.metadata.name }}</span>
               </template>
             </el-table-column>
 
@@ -194,7 +194,7 @@ const { clusterId, clusterList, editItem, editName,detailItem,detailName,deleteN
         <el-table-column fixed="right" align="center" label="Operations" min-width="103">
           <template #default="scope">
             <!-- row传递时包含完整的对象信息，即后端返回的list对应的list[row],的对象信息，包括metadata、status等，可以直接使用，不需要再次请求API -->
-            <el-button :disabled="scope.row.clusterStatus == ''" link type="danger" size="small" @click="deleteHandle(scope.row)">删除</el-button>
+            <el-button :disabled="scope.row.clusterStatus == ''" link type="danger"  @click="deleteHandle(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

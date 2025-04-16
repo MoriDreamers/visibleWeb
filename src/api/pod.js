@@ -4,15 +4,15 @@ import { apiUrl } from '../config/index.js';
 
 //命名空间
 export const getPodListApi = (clusterId,namespace) => {
-    console.log("请求获取命名空间列表");
+    console.log("请求获取POD列表");
     return request(apiUrl.getPodListApi, {"clusterId":clusterId,"namespace":namespace}, "get",2000);
 }
 export const deletePodApi = (clusterId,name,namespace) => { 
-    console.log("请求删除的命名空间ID",name,namespace);
+    console.log("请求删除的PODID",name,namespace);
     return request(apiUrl.deletePodApi, {clusterId,name,namespace}, "post",2000);
 }
 export const getPodApi = (clusterId,name,namespace) => { 
-    console.log("请求获取的命名空间ID",clusterId,name,namespace);
+    console.log("请求获取的PODID",clusterId,name,namespace);
     return request(apiUrl.getPodApi, {clusterId,name,namespace}, "get",2000);
 }
 /* 

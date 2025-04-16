@@ -142,8 +142,8 @@ const closeDiag = () => {
 
         <el-table-column fixed="right"  align="center" label="Operations" min-width="103">
           <template #default="scope">
-            <el-button :disabled="scope.row.clusterStatus !== 'Active'" link type="warning" size="small" @click="edit(scope.row.id)">编辑</el-button>
-            <el-button @click="deleteItem(scope.row)" link type="danger" size="small">删除</el-button>
+            <el-button :disabled="scope.row.clusterStatus !== 'Active'" link type="warning"  @click="edit(scope.row.id)">编辑</el-button>
+            <el-button @click="deleteItem(scope.row)" link type="danger" >删除</el-button>
           </template>
         </el-table-column>
       </el-table>

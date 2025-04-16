@@ -47,7 +47,7 @@ const deleteHandle = (row) => {
         type:'success',
         message:Response.message,
       })
-      getListItem() 
+      getList() 
     })
     })
     
@@ -143,9 +143,9 @@ const {yamlItem} = toRefs(data);
                 <el-table-column fixed="right" align="center" label="Operations" min-width="140">
                   <template #default="scope">
                     <!-- row传递时包含完整的对象信息，即后端返回的list对应的list[row],的对象信息，包括metadata、status等，可以直接使用，不需要再次请求API -->
-                    <el-button  :disabled="scope.row.metadata.deletionTimestamp" link type="danger" size="small" @click="deleteHandle(scope.row)">删除</el-button>
-                    <el-button  :disabled="scope.row.metadata.deletionTimestamp" link type="info" size="small" @click="(scope.row)">日志</el-button>
-                    <el-button  :disabled="scope.row.metadata.deletionTimestamp" link type="primary" size="small" @click="(scope.row)">终端</el-button>
+                    <el-button  :disabled="!!scope.row.metadata.deletionTimestamp" link type="danger"  @click="deleteHandle(scope.row)">删除</el-button>
+                    <el-button  :disabled="!!scope.row.metadata.deletionTimestamp" link type="info"  @click="(scope.row)">日志</el-button>
+                    <el-button  :disabled="!!scope.row.metadata.deletionTimestamp" link type="primary"  @click="(scope.row)">终端</el-button>
                   </template>
                 </el-table-column>
               </el-table>

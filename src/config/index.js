@@ -26,7 +26,12 @@ export const apiUrl = {
     getPodListApi: `${BASE_URL}/api/pod/list`,
     getPodApi : `${BASE_URL}/api/pod/get`,
     deletePodApi : `${BASE_URL}/api/pod/delete`,
-
+    //deployment资源
+    getDeploymentListApi: `${BASE_URL}/api/deployment/list`,
+    getDeploymentApi : `${BASE_URL}/api/deployment/get`,
+    deleteDeploymentApi : `${BASE_URL}/api/deployment/delete`,
+    updataDeploymentApi:`${BASE_URL}/api/deployment/update`,
+    addDeploymentApi:`${BASE_URL}/api/deployment/add`,
 }
 
 export const apiHeader = {
