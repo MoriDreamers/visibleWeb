@@ -1,9 +1,9 @@
 <script setup>
-
+import ScheduleFrame from '../components/scheduleFrame.vue'
 </script>
 
 <template>
-    添加
+    <ScheduleFrame></ScheduleFrame>
 </template>
 
 <style scoped>

@@ -44,3 +44,8 @@ export const updateNodeListApi = (clusterId,name,item) => {
     console.log("更新节点",name);
     return request(apiUrl.updateNodeListApi,{clusterId,name,item}, "post",2000);
 }
+
+export const getSecretListApi = (data) => {
+    console.log("请求获取secret列表");
+    return request(apiUrl.getSecretListApi, data, "get",2000);
+}

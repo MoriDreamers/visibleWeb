@@ -42,7 +42,7 @@ const colorEgg = () => {
     <el-aside width="250px" class="el-aside"  >
       <div class="el-aside-logo">      
         <el-button text @click="colorEggCount" v-model="countEgg">
-          visible K8s !
+          Visible K8S !
         </el-button>
       </div>
 

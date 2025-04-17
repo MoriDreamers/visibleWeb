@@ -32,6 +32,9 @@ export const apiUrl = {
     deleteDeploymentApi : `${BASE_URL}/api/deployment/delete`,
     updataDeploymentApi:`${BASE_URL}/api/deployment/update`,
     addDeploymentApi:`${BASE_URL}/api/deployment/add`,
+    //secret资源
+    getSecretListApi: `${BASE_URL}/api/secret/list`,
+    getSecretApi: `${BASE_URL}/api/secret/get`,
 }
 
 export const apiHeader = {
