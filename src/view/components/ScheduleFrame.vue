@@ -8,12 +8,14 @@ import { reactive } from 'vue';
 import { toRefs } from 'vue';
 import { getSecretListApi } from '../../api/cluster.js';
 import { computed } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ElMessage, useTransitionFallthroughEmits } from 'element-plus';
 import Table from './Table.vue';
 import { listToObject,objectToList } from '../../utils/utils';
 import { addDeploymentApi } from '../../api/deployment';
 import { useItem } from '../../store/index.js'
 import { storeToRefs } from 'pinia';
+import scheduleConfig from './schedule/scheduleConfig.vue';
+import volume from './schedule/Volume.vue';
 
 const props = defineProps({
     resourseType: {
@@ -92,6 +94,7 @@ const data = reactive ({
         controllerLabelList:[],
         podAnnoList:[],
         podLabelList:[],
+        nodeSelectorList:[],
     },
 })
 
@@ -145,7 +148,7 @@ const getStrategyType = computed(()=>{
 
 //选择后的回调调试用
 const seleteChanged = () =>{
-    console.log("选择的", useItemer.item)
+/*     console.log("选择的", useItemer.item) */
 }
 
 //把更新方式的相关处理
@@ -185,7 +188,8 @@ const submitItem = () => {
 /*     addDeploymentApi(useItemer.item).then((res) => {
         ElMessage.success("创建成功"+res.data.message);
     }) */
-    //list转换obj
+
+//处理标签注释 list转换obj
     let controllerAnnoObj = {}
     let controllerLabelObj = {}
     let podAnnoObj = {}
@@ -210,6 +214,8 @@ const submitItem = () => {
     useItemer.item.spec.template.metadata.annotations = podAnnoObj
     useItemer.item.spec.template.metadata.labels = podLabelObj
     useItemer.item.spec.selector.matchLabels = podLabelObj
+//处理调度配置
+    useItemer.item.spec.template.spec.nodeSelector = listToObject(data.options.nodeSelectorList)
 
 }
 
@@ -397,10 +403,12 @@ const submitItem = () => {
             </el-tab-pane>
 
             <el-tab-pane label="调度配置" name="schedule">
-
+                <scheduleConfig :list="options.nodeSelectorList"></scheduleConfig>
             </el-tab-pane>
 
-            <el-tab-pane label="存储卷配置" name="volume">volume</el-tab-pane>
+            <el-tab-pane label="存储卷配置" name="volume">
+                <volume></volume>
+            </el-tab-pane>
 
             <el-tab-pane label="容器配置" name="container">container</el-tab-pane>
 

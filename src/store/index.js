@@ -48,6 +48,7 @@ export const useItem = defineStore('item',{
                         },
                         spec:{
                             imagePullSecrets:[],
+                            nodeSelector:{},
                             dnsPolicy:[]
                         },
                     },
