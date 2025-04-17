@@ -13,9 +13,11 @@ import Table from './Table.vue';
 import { listToObject,objectToList } from '../../utils/utils';
 import { addDeploymentApi } from '../../api/deployment';
 import { useItem } from '../../store/index.js'
+import { objToYaml } from '../../utils/utils.js';
 import { storeToRefs } from 'pinia';
 import scheduleConfig from './schedule/scheduleConfig.vue';
 import volume from './schedule/Volume.vue';
+import CodeMirror from '../components/CodeMirror.vue';
 
 const props = defineProps({
     resourseType: {
@@ -46,7 +48,7 @@ const data = reactive ({
             selector:{
                 matchLabels:{},
             },
-            relicas:1,
+            replicas:1,
             //POD的模板
             template:{
                 metadata:{
@@ -182,6 +184,7 @@ const { registryList,dnsPolicyList ,autoCreateService,options} = toRefs(data);
 //把ITEM作为pinia的全局状态管理
 const {item} = storeToRefs(useItem())
 
+
 //提交创建
 const submitItem = () => {
     console.log("提交创建", useItemer.item)
@@ -219,15 +222,37 @@ const submitItem = () => {
 
 }
 
+//查看YAML
+const yamlItem = ref("")
+const showDetailDialog = ref(false)
+const detailYaml = () => {
+    
+//把一些选择框的数据进行处理我们暂时写在了submit里面 后续需要优化
+submitItem()
+    console.log("查看YAML", useItemer.item)
+    const itemCopy = JSON.parse(JSON.stringify(item.value)); // 要加 .value
+    const yamlData = objToYaml(itemCopy);
+    yamlItem.value = yamlData; // 正确赋值方式
+    showDetailDialog.value = true;
+}
+
+
 </script>
 
 <template>
+    <el-dialog destroy-on-close v-model="showDetailDialog" :title="'Deployment详情'" width=50% >
+        <CodeMirror
+        v-model="yamlItem"
+        >
+        </CodeMirror>
+    </el-dialog>
+
     <div style="display: flex;align-items: center;justify-content: space-between;margin-bottom: 10px;">
         <div>
           <span style="font-weight: bold;color:#000000c9;font-size: 16px;">创建Deployment</span>
         </div>
         <div>
-            <el-button type="primary" @click="">YAML</el-button>
+            <el-button type="primary" @click="detailYaml">YAML</el-button>
             <el-button type="default" @click="submitItem">{{props.method === 'create'? '创建' : '更新'}}</el-button>
         </div>
     </div>
@@ -264,8 +289,8 @@ const submitItem = () => {
                         </el-col>
 
                         <el-col :span="6">
-                            <el-form-item label="副本数量" prop="spec.relicas" >
-                                <el-input-number v-model="item.spec.relicas" :min="0" ></el-input-number>
+                            <el-form-item label="副本数量" prop="spec.replicas" >
+                                <el-input-number v-model="item.spec.replicas" :min="0" ></el-input-number>
                             </el-form-item>
                         </el-col>
                         

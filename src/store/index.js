@@ -39,7 +39,7 @@ export const useItem = defineStore('item',{
                     selector:{
                         matchLabels:{},
                     },
-                    relicas:1,
+                    replicas:1,
                     //POD的模板
                     template:{
                         metadata:{
@@ -49,7 +49,10 @@ export const useItem = defineStore('item',{
                         spec:{
                             imagePullSecrets:[],
                             nodeSelector:{},
-                            dnsPolicy:[]
+                            dnsPolicy:"ClusterFirst",
+                            hostNetwork:false,
+                            //存储配置
+                            volumes:[],
                         },
                     },
                     strategy:{
