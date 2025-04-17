@@ -12,7 +12,8 @@ import { ElMessage } from 'element-plus';
 import Table from './Table.vue';
 import { listToObject,objectToList } from '../../utils/utils';
 import { addDeploymentApi } from '../../api/deployment';
-
+import { useItem } from '../../store/index.js'
+import { storeToRefs } from 'pinia';
 
 const props = defineProps({
     resourseType: {
@@ -24,6 +25,10 @@ const props = defineProps({
         default: "create"
     },
 })
+
+
+//拿到pinia的全局状态管理
+const useItemer = useItem()
 
 const data = reactive ({
     clusterId: '',
@@ -81,7 +86,9 @@ const data = reactive ({
     ],
     autoCreateService:false,
     options:{
-        controllerAnnoList:[],
+        controllerAnnoList:[
+
+        ],
         controllerLabelList:[],
         podAnnoList:[],
         podLabelList:[],
@@ -138,15 +145,15 @@ const getStrategyType = computed(()=>{
 
 //选择后的回调调试用
 const seleteChanged = () =>{
-    console.log("选择的", data.item)
+    console.log("选择的", useItemer.item)
 }
 
 //把更新方式的相关处理
 const strategyChanged = (info) =>{
     if (info == "Recreate") {
-        delete data.item.spec.strategy.rollingUpdate
+        delete useItemer.item.spec.strategy.rollingUpdate
     }if (info == "RollingUpdate") {
-        data.item.spec.strategy.rollingUpdate = {
+        useItemer.item.spec.strategy.rollingUpdate = {
             maxSurge:"25%",
             maxUnavailable:"25%"
         }
@@ -167,12 +174,15 @@ const autoCreateLabel = ref('true')
 //标签页面
 const labelActiveName = ref('controllerAnno')
 
-const { item,registryList,dnsPolicyList ,autoCreateService,options} = toRefs(data);
+const { registryList,dnsPolicyList ,autoCreateService,options} = toRefs(data);
+
+//把ITEM作为pinia的全局状态管理
+const {item} = storeToRefs(useItem())
 
 //提交创建
 const submitItem = () => {
-    console.log("提交创建", data.item)
-/*     addDeploymentApi(data.item).then((res) => {
+    console.log("提交创建", useItemer.item)
+/*     addDeploymentApi(useItemer.item).then((res) => {
         ElMessage.success("创建成功"+res.data.message);
     }) */
     //list转换obj
@@ -188,18 +198,18 @@ const submitItem = () => {
     }else{
         ///默认自动生成一个标签
         const obj = {
-            app: data.item.metadata.name
+            app: useItemer.item.metadata.name
         }
         controllerAnnoObj = obj
         controllerLabelObj = obj
         podAnnoObj = obj
         podLabelObj = obj
     }
-    data.item.metadata.annotations = controllerAnnoObj
-    data.item.metadata.labels = controllerLabelObj
-    data.item.spec.template.metadata.annotations = podAnnoObj
-    data.item.spec.template.metadata.labels = podLabelObj
-    data.item.spec.selector.matchLabels = podLabelObj
+    useItemer.item.metadata.annotations = controllerAnnoObj
+    useItemer.item.metadata.labels = controllerLabelObj
+    useItemer.item.spec.template.metadata.annotations = podAnnoObj
+    useItemer.item.spec.template.metadata.labels = podLabelObj
+    useItemer.item.spec.selector.matchLabels = podLabelObj
 
 }
 
@@ -387,7 +397,7 @@ const submitItem = () => {
             </el-tab-pane>
 
             <el-tab-pane label="调度配置" name="schedule">
-                
+
             </el-tab-pane>
 
             <el-tab-pane label="存储卷配置" name="volume">volume</el-tab-pane>
