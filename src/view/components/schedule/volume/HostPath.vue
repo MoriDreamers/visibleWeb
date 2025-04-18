@@ -3,9 +3,35 @@ import { ref, reactive,inject } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useItem } from '../../../../store/index.js'
 import { storeToRefs } from 'pinia';
+import { onMounted } from 'vue';
+
+
+
 const formRef = ref()
+const props = defineProps({
+    volumeConfig: {
+        type: Object,
+        default: {}
+    },method:{
+        type:String,
+        default:'add'
+    } 
+})
 
 const useItemer = useItem()
+
+//挂载前赋值过去配置，再次修改按照组件还是实时绑定到全局变量。所以不用修改
+onMounted(() => {
+    if (props.method === 'update') {
+        //如果不做深拷贝，它是通过引用传递的，这俩会指向一个对象，也就是说修改其中一个会影响另一个
+        //具体来说 父组件通过全局变量读入一个row，传给子组件
+        //子组件读取row并且绑定到data.newVolumeConfig
+        //这俩实际上还是一个对象 所以修改data.newVolumeConfig会影响到父组件的row
+        //这是不做深拷贝的引用传递导致的，但同时也提供了修改全局变量的可能
+        data.newVolumeConfig = props.volumeConfig
+    }
+})
+
 const data = reactive({
     newVolumeConfig: {
         name: "",
@@ -85,28 +111,30 @@ const closeDiaglog = inject('closeDiaglog')
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="挂载类型" prop="hostPath.type">
-                    <el-select
-                        v-model="data.newVolumeConfig.hostPath.type"
-                        placeholder="选择挂载类型"
-                    >
-                        <el-option
-                            v-for="s in data.typeList"
-                            :key="s.value"
-                            :label="s.label"
-                            :value="s.value"
-                        />
-                    </el-select>
+                <el-form-item label="宿主机路径" prop="hostPath.path">
+                
+                    <el-input v-model.trim="data.newVolumeConfig.hostPath.path" placeholder="请输入路径,必须以 / 开头"></el-input>
                 </el-form-item>
             </el-col>
         </el-row>
 
-        <el-form-item label="宿主机路径" prop="hostPath.path">
-            <el-input v-model.trim="data.newVolumeConfig.hostPath.path" placeholder="请输入路径,必须以 / 开头"></el-input>
+
+        <el-form-item label="* 挂载类型" prop="hostPath.type">
+                <el-select
+                v-model="data.newVolumeConfig.hostPath.type"
+                placeholder="选择挂载类型"
+            >
+                <el-option
+                    v-for="s in data.typeList"
+                    :key="s.value"
+                    :label="s.label"
+                    :value="s.value"
+                />
+            </el-select>
         </el-form-item>
 
         <div>
-            <el-button type="primary" @click="submitItem">保存</el-button>
+            <el-button v-if="method === 'add'" type="primary" @click="submitItem">添加</el-button>
         </div>
     </el-form>
 </template>

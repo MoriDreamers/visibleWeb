@@ -11,7 +11,7 @@ import ConfigMap from './volume/ConfigMap.vue'
 import Secret from './volume/Secret.vue'
 import PersistentVolumeClaim from './volume/PersistentVolumeClaim.vue'
 import { provide } from 'vue';
-
+import { computed } from 'vue';
 
 const useItemer = useItem()
 //把ITEM作为pinia的全局状态管理
@@ -29,6 +29,8 @@ const data = reactive({
   volumeType:['hostPath','emptyDir','nfs','configMap','secret','persistentVolumeClaim']
 })
 let voulmeType = ref('hostPath')
+
+//添加功能
 const addVolume = () => {
     console.log("addVolume")
     showAddvolume.value = true
@@ -42,6 +44,14 @@ const closeDiaglog = () => {
 }
 //发布功能
 provide('closeDiaglog', closeDiaglog)
+
+//计算存储类型
+const getVolumeType = computed(() => (volumeItem) => {
+  const keyList = Object.keys(volumeItem)
+  return keyList[1]
+})
+
+
 </script>
 
 <template>
@@ -51,23 +61,28 @@ provide('closeDiaglog', closeDiaglog)
     style="width: 100%;" 
     height="400px"
     >
-      <el-table-column prop="" label="名称">
+      <el-table-column prop="" label="名称" width="200px">
         <template #default="scope">
-<!--           <el-input  placeholder="请输入存储卷名称"  type="textarea" autosize :autosize="{ minRows: 1, maxRows: 2 }" v-model="scope.row.name">
-          </el-input>  -->
-          {{ scope.row.name }}
+          <el-input  placeholder="请输入存储卷名称"  type="textarea" autosize :autosize="{ minRows: 1, maxRows: 2 }" v-model="scope.row.name">
+<!--           绑定的是这个行的内容 但实际上走的是响应式的全局变量 也就是可以实时修改！ -->
+          </el-input> 
         </template>
       </el-table-column>
 
-      <el-table-column prop="" label="类型" >
+      <el-table-column prop="" label="存储类型" width="100px">
         <template #default="scope">
-            <span>{{ scope.row.hostPath.type }}</span>
+            <span>{{ getVolumeType(scope.row) }}</span>
         </template>
       </el-table-column>
 
       <el-table-column prop="" label="Volume配置" >
         <template #default="scope">
-            <span>配置</span>
+          <component 
+          :is="data.volumeTypeComponts[ getVolumeType(scope.row)]" 
+          method="update"
+
+          :volumeConfig="scope.row"
+          />
         </template>
       </el-table-column>
 
