@@ -13,7 +13,7 @@ const props = defineProps({
 
 <template>
 <!--     <div style="margin-bottom: 15px;color: #666;line-height: 1.5;display: flex;align-items: center;" >⚠ 点击可以展开选项卡</div> -->
-    <el-collapse v-model="activeNames" @change="handleChange">
+    <el-collapse v-model="activeNames">
         <el-collapse-item title="绑定节点 [ ⚠ 点击可以展开选项卡 ]" name="nodeSelector">
            <!--  这里相当于一个两层引用 父组件使用data下list字段里的一个数组绑定到这个组件的props 
             这个组件的props又绑定到TAB这个子组件的list字段上 

@@ -18,6 +18,7 @@
 //这个问题非常典型，因为在表格里用了 itemForm.spec.taints，但在组件加载的时候，它还没被onmouted初始化出来，所以 Vue 会报错
 //在这里一定义好字段一开始读取的时候就不会出问题了
 const data = reactive({
+
     itemForm:{
         spec:{
           taints:[]
@@ -94,14 +95,14 @@ const {itemForm,labelList,taintOptinos} = toRefs(data)
 </script>
 
 <template>
- 
   <el-form 
-    label-width="140px"    
+    label-width="140px"   
+
     ref="itemFormRef" 
     :model="itemForm" 
     >
     <div>
-      <el-tabs >
+      <el-tabs>
         <el-tab-pane label="标签配置">
           <el-table :data="labelList" stripe style="width: 100%;" >
             <el-table-column prop="key" label="KEY">

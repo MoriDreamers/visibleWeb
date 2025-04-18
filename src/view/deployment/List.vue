@@ -131,7 +131,7 @@ const {yamlItem} = toRefs(data);
                       </template>
                 </el-table-column>   
 
-                <el-table-column prop="status.podIP" label="暂停更新" width="120"  /> 
+                <el-table-column prop="" label="暂停更新" width="120"  /> 
 
                 <el-table-column prop="spec.nodeName" label="宿主机" width="120"  /> 
 

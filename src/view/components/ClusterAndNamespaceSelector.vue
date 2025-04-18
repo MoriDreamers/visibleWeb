@@ -34,7 +34,7 @@ const clusterChangedRollbackHandler = () => {
 // 查询集群
 const getNamespaceList= async() =>{
     await getNameSpaceListApi(data.clusterId).then((response)=>{
-        console.log("response:", response.data.items)
+        console.log("集群和命名空间选择组件查询到:", response.data.items)
         data.namespaceList = response.data.items
     })
     const curNamespace = route.query.namespace
