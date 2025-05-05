@@ -19,21 +19,6 @@ const data = reactive({
     yamlItem: "",
 })
 
-// 计算pod的重启次数和容器状态
-const getPodRestartCount = computed(() => (row) => {
-  let restartCount = 0;
-  let readyCount = 0;
-  row.status.containerStatuses.forEach((item) => {
-    //便利每个容器的状态，累加重启次数，且如果容器状态ready，则readyCount+1
-    restartCount += item.restartCount;
-    if (item.ready) {
-      readyCount += 1;
-    }
-  });
-  const containerTotal = row.status.containerStatuses.length;
-  const readyStatus = `${readyCount}/${containerTotal}`;
-  return [restartCount, readyStatus];
-});
 const deleteHandle = (row) => {
     ElMessageBox.confirm(
     '正在尝试删除Deployment'+row.metadata.name+'，是否继续？',
@@ -57,10 +42,16 @@ const deleteHandle = (row) => {
 
 //利用回调函数查询Deployment列表
 const getList = async () => {
+  try {
     const res = await getListItem(data.clusterId, data.namespace);
-    data.items = res.data.items;
-    console.log(data.items);
+    data.items = res?.data?.items || [];
+    console.log('Deployment list:', data.items);
+  } catch (error) {
+    data.items = [];
+    console.error('获取Deployment列表失败:', error);
+  }
 }
+
 const rollback = (clusterId, namespace) => {
     data.clusterId = clusterId;
     data.namespace = namespace;

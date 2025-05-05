@@ -4,7 +4,7 @@ import List from '../components/List.vue';
 import ClusterAndNamespaceSelector from '../components/ClusterAndNamespaceSelector.vue';
 import { getPodListApi as getListItem ,deletePodApi as deleteItem ,getPodApi as getItem } from '../../api/pod.js';
 import { reactive,computed,ref } from 'vue';
-import { ElMessage, ElMessageBox, } from 'element-plus';
+import { ElMessage, ElMessageBox, roleTypes, } from 'element-plus';
 import CodeMirror from '../components/CodeMirror.vue';
 import { toRefs } from 'vue';
 import { objToYaml } from '../../utils/utils.js';
@@ -21,6 +21,9 @@ const data = reactive({
 const getPodRestartCount = computed(() => (row) => {
   let restartCount = 0;
   let readyCount = 0;
+  if (row.status.containerStatuses === undefined || row.status.containerStatuses.length === 0) {
+    return [restartCount, "0/0"];
+  }
   row.status.containerStatuses.forEach((item) => {
     //便利每个容器的状态，累加重启次数，且如果容器状态ready，则readyCount+1
     restartCount += item.restartCount;

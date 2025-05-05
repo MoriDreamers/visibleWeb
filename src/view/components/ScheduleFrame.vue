@@ -111,29 +111,29 @@ const namespaceRollback =(clusterId,namespace) =>{
 }
 
 const itemRef = ref("null")
+const getRegistrySecret = async () => {
+  const getSecretListParam = {
+    clusterId: data.clusterId,
+    namespace: data.namespace,
+    labelSelector: "",
+    fieldSelector: "type=kubernetes.io/dockerconfigjson"
+  };
 
-//获取私有镜像仓库的secret方法
-const getRegistrySecret = () => {
-    const getSecretListParam ={
-        clusterId: data.clusterId,
-        namespace: data.namespace,
-        labelSelector: "",
-        fieldSelector: "type=kubernetes.io/dockerconfigjson"
-    }
+  try {
+    const res = await getSecretListApi(getSecretListParam);
+    const items = res?.data?.items || [];
 
-    getSecretListApi(getSecretListParam).then((res) => {
-        //需要的是 {name: "", name:"",...}
-        //因为在deployment中的pullsecret字段的格式是对象组成的数组{name: "", name:"",...}
-        data.registryList = [];//先清空
-        res.data.items.forEach(item => {
-            data.registryList.push({
-                name: item.metadata.name,
-            })
-        })
-/*         console.log("获取到的私有仓库的secret", data.registryList); */
-    });
-
+    data.registryList = items.map(item => ({
+      name: item.metadata?.name || ""
+    }));
+    
+    // console.log("获取到的私有仓库的secret", data.registryList);
+  } catch (err) {
+    console.error("获取私有镜像 secret 失败:", err);
+    data.registryList = [];
+  }
 };
+
 
 //返回更新方式
 const getStrategyType = computed(()=>{

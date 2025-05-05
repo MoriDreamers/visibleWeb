@@ -32,17 +32,23 @@ const clusterChangedRollbackHandler = () => {
 } 
 
 // 查询集群
-const getNamespaceList= async() =>{
-    await getNameSpaceListApi(data.clusterId).then((response)=>{
-        console.log("集群和命名空间选择组件查询到:", response.data.items)
-        data.namespaceList = response.data.items
+const getNamespaceList = async () => {
+    await getNameSpaceListApi(data.clusterId).then((response) => {
+        const items = response?.data?.items || []
+        console.log("集群和命名空间选择组件查询到:", items)
+        data.namespaceList = items
+    }).catch((err) => {
+        console.error("获取 namespace 失败", err)
+        data.namespaceList = []
     })
+    
     const curNamespace = route.query.namespace
-    data.namespace = curNamespace?curNamespace:"default"
-    // 回调函数  
-    namespaceChangedRollbackHandler()
+    data.namespace = curNamespace ? curNamespace : "default"
 
+    // 回调函数
+    namespaceChangedRollbackHandler()
 }
+
 
 // 异转同
 const getClusterList = async() => {
@@ -82,14 +88,16 @@ const {clusterId,clusterList,namespace,namespaceList} = toRefs(data)
 </script>
 
 <template>
-        <el-select v-model="clusterId" placeholder="选择集群" @change="getClusterList(clusterId)">
-            <el-option v-for="item in clusterList"
+    <el-select v-model="clusterId" placeholder="选择集群" @change="clusterChanged">
+        <el-option
+            v-for="item in clusterList"
             :key="item.id"
             :label="item.id"
             :value="item.id"
             :disabled="item.status == 'InActive'"
-            />
-        </el-select>
+        />
+    </el-select>
+    
     <el-select filterable style="margin-left: 20px;" v-if="props.showNamespace" v-model="namespace" placeholder="选择namespace" @change="namespaceChanged()">
         <el-option v-for="items in namespaceList"
         :key="items.metadata.name"
