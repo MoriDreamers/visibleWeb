@@ -13,9 +13,21 @@ API地址在./src/config
 
 ![登录示意图](./example/login.png)
 
-![其他示意图01](./example/add.png)
+![其他示意图01](./example/deploy01.png)
+
+![YAML编辑示意图](./example/deploy02.png)
 
 
+以URL:/cluster/add为例子：
 
-//如URL:/cluster/add 在cluster中使用了layout.vue，然后子路由配置了add.vue。
-//渲染顺序就是先渲染layout.vue，然后layout中包含aside、header、main三个组件，然后main组件渲染RouterView，RouterView会渲染子路由的组件，这里就是渲染子路由的add.vue
+在cluster中使用了layout.vue && 子路由配置了add.vue
+
+渲染顺序: 渲染layout.vue
+
+layout中包含aside、header、main三个组件
+
+main组件渲染RouterView
+
+RouterView会渲染子路由的组件
+
+这里就是渲染子路由的add.vue
