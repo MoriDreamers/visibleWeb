@@ -106,7 +106,7 @@ const closeDiaglog = inject('closeDiaglog')
         <el-row :gutter="20">
             <el-col :span="12">
                 <el-form-item label="Volume名称" prop="name">
-                    <el-input v-model.trim="data.newVolumeConfig.name" placeholder="请输入Deployment名称"></el-input>
+                    <el-input v-model.trim="data.newVolumeConfig.name" placeholder="请输入Volume名称"></el-input>
                 </el-form-item>
             </el-col>
 
