@@ -104,6 +104,9 @@ const data = reactive ({
 const namespaceRollback =(clusterId,namespace) =>{
     data.clusterId = clusterId;
     data.namespace = namespace;
+    useItemer.namespace = namespace;
+    useItemer.clusterId = clusterId;
+
     getRegistrySecret();
 }
 

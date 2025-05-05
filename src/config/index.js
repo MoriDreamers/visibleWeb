@@ -35,6 +35,8 @@ export const apiUrl = {
     //secret资源
     getSecretListApi: `${BASE_URL}/api/secret/list`,
     getSecretApi: `${BASE_URL}/api/secret/get`,
+    //persistentvolumeclaim资源
+    getPersistentVolumeClaimListApi: `${BASE_URL}/api/persistentvolumeclaim/list`,
 }
 
 export const apiHeader = {

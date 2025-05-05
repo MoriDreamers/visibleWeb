@@ -28,6 +28,8 @@ export const useItem = defineStore('item',{
     //data
     state: () => {
         return{
+            clusterId:"",
+            namespace:"",
             item:{
                 metadata:{
                     name:"",
