@@ -27,7 +27,7 @@ const data = reactive({
         nfs: {
             server:"",
             path: "",
-            readOnly: false,
+            readonly: false,
         },
     },
 })
@@ -99,17 +99,21 @@ const closeDiaglog = inject('closeDiaglog')
     >
 
                 <el-form-item label="Volume名称" prop="name">
-                    <el-input v-model.trim="data.newVolumeConfig.name" placeholder="请输入Deployment名称"></el-input>
+                    <el-input v-model.trim="data.newVolumeConfig.name" placeholder="请输入Volume名称"></el-input>
                 </el-form-item>
 
 
 
                 <el-form-item label="NFS路径" prop="nfs.path">
-                    <el-input v-model.trim="data.newVolumeConfig.nfs.path" />
+                    <el-input v-model.trim="data.newVolumeConfig.nfs.path" placeholder="输入的内容必须以 / 开头"/>
                   </el-form-item>
                   
                   <el-form-item label="NFS地址" prop="nfs.server">
-                    <el-input v-model.trim="data.newVolumeConfig.nfs.server" />
+                    <el-input v-model.trim="data.newVolumeConfig.nfs.server" placeholder="输入的内容只能包含字母、数字、点、下划线、减号" />
+                  </el-form-item>
+
+                  <el-form-item label="只读模式" prop="nfs.readOnly">
+                    <el-switch v-model="data.newVolumeConfig.nfs.readonly"></el-switch>
                   </el-form-item>
                   
 
