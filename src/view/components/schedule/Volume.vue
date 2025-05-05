@@ -13,6 +13,11 @@ import PersistentVolumeClaim from './volume/PersistentVolumeClaim.vue'
 import { provide } from 'vue';
 import { computed } from 'vue';
 
+const deleteTabRow = (list, index) => {
+  list.splice(index, 1)
+}
+
+
 const useItemer = useItem()
 //把ITEM作为pinia的全局状态管理
 const {item} = storeToRefs(useItem())
@@ -83,6 +88,8 @@ const getVolumeType = computed(() => (volumeItem) => {
 
           :volumeConfig="scope.row"
           />
+          <span>参数核对： {{ scope.row }}</span>
+          
         </template>
       </el-table-column>
 
@@ -91,7 +98,7 @@ const getVolumeType = computed(() => (volumeItem) => {
           <el-button link style="font-weight: bold;color:rgb(243, 105, 71)" @click="addVolume">添加</el-button>
         </template>
         <template #default="scope" >
-          <el-button link type="warning" @click="deleteTabRow(item.spec.template.spec.volumes,scope.$index)" >删除</el-button>
+          <el-button link type="warning" @click="deleteTabRow(item.spec.template.spec.volumes, scope.$index)" >删除</el-button>
         </template>
       </el-table-column>
     </el-table>

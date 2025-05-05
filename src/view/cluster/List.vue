@@ -134,7 +134,7 @@ const closeDiag = () => {
         <el-table-column sortable prop="" label="状态" width="80" >
           <template #default="scope">
               <el-icon v-if="scope.row.clusterStatus === 'Active'" color="green"><Check /></el-icon>
-              <el-icon v-if="scope.row.clusterStatus === 'Inactive'" color="red"><Close /></el-icon>
+              <el-icon v-else color="red"><Close /></el-icon>
           </template>
         </el-table-column>   
 

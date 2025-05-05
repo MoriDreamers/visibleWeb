@@ -37,9 +37,6 @@ const rules = {
   name: [
     { required: true, message: '请输入Volume名称', trigger: 'blur' },
   ],
-  'nfs.type': [
-    { message: '请选择挂载类型', trigger: 'change' },
-  ],
   'nfs.path': [
     { required: true, message: '请输入nfs路径', trigger: 'blur' },
     { pattern: /^\/.*/, message: '路径必须以 / 开头', trigger: 'blur' },
@@ -49,6 +46,7 @@ const rules = {
     { pattern: /^[a-zA-Z0-9._-]+$/, message: 'NFS地址只能包含字母、数字、点、下划线、减号', trigger: 'blur' },
   ]
 }
+
 
 const submitItem = () => {
     formRef.value.validate((valid) => {
@@ -75,6 +73,18 @@ const submitItem = () => {
     })
 }
 
+//挂载前赋值过去配置，再次修改按照组件还是实时绑定到全局变量。所以不用修改
+onMounted(() => {
+    if (props.method === 'update') {
+        //如果不做深拷贝，它是通过引用传递的，这俩会指向一个对象，也就是说修改其中一个会影响另一个
+        //具体来说 父组件通过全局变量读入一个row，传给子组件
+        //子组件读取row并且绑定到data.newVolumeConfig
+        //这俩实际上还是一个对象 所以修改data.newVolumeConfig会影响到父组件的row
+        //这是不做深拷贝的引用传递导致的，但同时也提供了修改全局变量的可能
+        data.newVolumeConfig = props.volumeConfig
+    }
+})
+
 //订阅关闭弹窗的数据
 const closeDiaglog = inject('closeDiaglog')
 
@@ -94,17 +104,14 @@ const closeDiaglog = inject('closeDiaglog')
 
 
 
-                <el-form-item label="NFS路径" prop="hostPath.path" required>
-                
-                    <el-input v-model.trim="data.newVolumeConfig.nfs.path" placeholder="请输入路径,必须以 / 开头"></el-input>
-                </el-form-item>
-
-
-
-            <el-form-item label="NFS地址" prop="hostPath.server" required>
-            
-                <el-input v-model.trim="data.newVolumeConfig.nfs.server" placeholder="请输入NFS地址,只能包含字母、数字、点、下划线、减号"></el-input>
-            </el-form-item>
+                <el-form-item label="NFS路径" prop="nfs.path">
+                    <el-input v-model.trim="data.newVolumeConfig.nfs.path" />
+                  </el-form-item>
+                  
+                  <el-form-item label="NFS地址" prop="nfs.server">
+                    <el-input v-model.trim="data.newVolumeConfig.nfs.server" />
+                  </el-form-item>
+                  
 
 
         <div>
