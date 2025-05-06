@@ -130,7 +130,7 @@ const addItem = () => {
                 :prop="'secret.items.' + scope.$index + '.key'"
                 :rules="rules.items.key"
               >
-                <el-input v-model.trim="scope.row.key"></el-input>
+                <el-input v-model.trim="scope.row.key" placeholder="请输入KEY名"></el-input>
               </el-form-item>
             </template>
           </el-table-column>
@@ -141,7 +141,7 @@ const addItem = () => {
                 :prop="'secret.items.' + scope.$index + '.path'"
                 :rules="rules.items.path"
               >
-                <el-input v-model.trim="scope.row.path" />
+                <el-input v-model.trim="scope.row.path" placeholder="请输入相对路径！！！" />
               </el-form-item>
             </template>
           </el-table-column>

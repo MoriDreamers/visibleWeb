@@ -53,7 +53,8 @@ provide('closeDiaglog', closeDiaglog)
 //计算存储类型
 const getVolumeType = computed(() => (volumeItem) => {
   const keyList = Object.keys(volumeItem)
-  return keyList[1]
+  keyList.splice(keyList.indexOf('name'), 1)
+  return keyList[0]
 })
 
 
@@ -81,15 +82,21 @@ const getVolumeType = computed(() => (volumeItem) => {
       </el-table-column>
 
       <el-table-column prop="" label="Volume配置" >
+        <!-- 如果遇到了不支持的组件就不渲染编辑列表，防御性编程 -->
         <template #default="scope">
           <component 
+          v-if="data.volumeType.includes(getVolumeType(scope.row))"
           :is="data.volumeTypeComponts[ getVolumeType(scope.row)]" 
           method="update"
 
           :volumeConfig="scope.row"
           />
+          <span v-else>
+            暂不支持该存储类型
+          </span>
+
           <span>参数核对： {{ scope.row }}</span>
-          
+
         </template>
       </el-table-column>
 
