@@ -30,8 +30,14 @@ onMounted(() => {
 </script>
 
 <template>
-    <el-input v-model="inputData" placeholder="props.placeholder" style="width:props.width" @change="inputChange"></el-input>
-</template>
+    <el-input
+      v-model="inputData"
+      :placeholder="props.placeholder"
+      :style="{ width: props.width }"
+      @change="inputChange"
+    />
+  </template>
+  
 
 <style scoped>
 

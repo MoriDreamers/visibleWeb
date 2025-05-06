@@ -64,7 +64,7 @@ const getVolumeType = computed(() => (volumeItem) => {
     :data="item.spec.template.spec.volumes" 
     stripe 
     style="width: 100%;" 
-    height="400px"
+    height="100%"
     >
       <el-table-column prop="" label="名称" width="200px">
         <template #default="scope">
@@ -74,7 +74,7 @@ const getVolumeType = computed(() => (volumeItem) => {
         </template>
       </el-table-column>
 
-      <el-table-column prop="" label="存储类型" width="100px">
+      <el-table-column prop="" label="存储类型" width="180px">
         <template #default="scope">
             <span>{{ getVolumeType(scope.row) }}</span>
         </template>

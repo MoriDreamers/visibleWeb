@@ -434,7 +434,7 @@ submitItem()
                 <scheduleConfig :list="options.nodeSelectorList"></scheduleConfig>
             </el-tab-pane>
 
-            <el-tab-pane label="存储卷配置" name="volume">
+            <el-tab-pane label="存储卷配置" name="volume" >
                 <volume></volume>
             </el-tab-pane>
 
