@@ -53,8 +53,10 @@ export const useItem = defineStore('item',{
                             nodeSelector:{},
                             dnsPolicy:"ClusterFirst",
                             hostNetwork:false,
-                            //存储配置
+                            //存储
                             volumes:[],
+                            containers:[],
+                            initContainers:[],
                         },
                     },
                     strategy:{

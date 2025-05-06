@@ -18,6 +18,7 @@ import { storeToRefs } from 'pinia';
 import scheduleConfig from './schedule/scheduleConfig.vue';
 import volume from './schedule/Volume.vue';
 import CodeMirror from '../components/CodeMirror.vue';
+import Container from './schedule/Container.vue';
 
 const props = defineProps({
     resourseType: {
@@ -438,9 +439,13 @@ submitItem()
                 <volume></volume>
             </el-tab-pane>
 
-            <el-tab-pane label="容器配置" name="container">container</el-tab-pane>
+            <el-tab-pane label="容器配置" name="container">
+                <Container></Container>
+            </el-tab-pane>
 
-            <el-tab-pane label="初始化容器" name="initContainer">initContainer</el-tab-pane>
+            <el-tab-pane label="初始化容器" name="initContainer">                
+                <Container containerType="init"></Container>
+            </el-tab-pane>
           </el-tabs>
         </el-form>
 
