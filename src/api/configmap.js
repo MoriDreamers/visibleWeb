@@ -4,6 +4,6 @@ import { apiUrl } from '../config/index.js';
 
 //命名空间
 export const getConfigMapListApi = (data) => {
-    console.log("请求获取PV列表");
+    console.log("请求获取configmap列表");
     return request(apiUrl.getConfigMapListApi, data, "get",2000);
 }

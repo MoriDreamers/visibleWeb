@@ -3,7 +3,6 @@ import request from "./index.js";
 import { apiUrl } from '../config/index.js';
 
 //命名空间
-export const getPersistentVolumeClaimListApi = (data) => {
-    console.log("请求获取PVC列表");
-    return request(apiUrl.getPersistentVolumeClaimListApi, data, "get",2000);
+export const getSecretListApi = (data) => {;
+    return request(apiUrl.getSecretListApi, data, "get",2000);
 }

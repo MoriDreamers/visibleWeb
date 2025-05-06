@@ -40,8 +40,12 @@ export const apiUrl = {
     //configmap资源
     getConfigMapListApi: `${BASE_URL}/api/configmap/list`,
     //service资源
+    getServiceListApi: `${BASE_URL}/api/service/list`,
+    //ingress资源
+    getIngressListApi: `${BASE_URL}/api/ingress/list`,
+    //secret资源
+    getSecretListApi: `${BASE_URL}/api/secret/list`,
 }
-
 export const apiHeader = {
     TokenName: "Authorization",
 }
