@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted,ref, defineProps, defineEmits } from 'vue';
 
-// 这个组件可以把八进制的数字转换成十进制的数字
+// 这个组件可以把八进制的数字转换成十进制的数字!!!
 let inputData = ref()
 
 const props = defineProps({
