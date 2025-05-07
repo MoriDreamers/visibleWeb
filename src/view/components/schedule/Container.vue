@@ -7,7 +7,9 @@ import { toRefs } from 'vue';
 import { ElMessage } from 'element-plus';
 import StringToList from './../StringToList.vue'
 import Port from './container/Port.vue'
+import VolumeMount from './container/VolumeMount.vue'
 import CheckHealth from './container/CheckHealth.vue'
+
 
 //拿到pinia的全局状态管理 
 const useItemer = useItem()
@@ -36,6 +38,8 @@ const data = reactive({
             requests:{},
         },
         ports:[],
+        lifecycle:{},
+        volumeMounts:[],
     },
     options:{
         imagePullPolicyList:[
@@ -225,8 +229,8 @@ const seleteChanged = (value) => {
                 <el-tab-pane label="环境变量" name="env">
                     Task
                 </el-tab-pane>
-                <el-tab-pane label="存储配置" name="volume">
-                    Task
+                <el-tab-pane label="挂载存储" name="volume">
+                    <VolumeMount :volumeMounts="item.volumeMounts"></VolumeMount>
                 </el-tab-pane>
                 <el-tab-pane label="生命周期" name="life">
                     Task
