@@ -136,7 +136,7 @@ const seleteChanged = (value) => {
                         </el-col>
 
                         <el-col :span="8">
-                            <el-form-item label="是否绑定终端（创建一个终端让容器不会自动关闭）" prop="item.tty" >
+                            <el-form-item label="是否绑定终端" prop="item.tty" >
                                 <el-switch v-model="item.tty" active-color="#13ce66" inactive-color="#ff4949" active-text="启用" inactive-text="禁用"></el-switch>
                             </el-form-item>
                         </el-col>

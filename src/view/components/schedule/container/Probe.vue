@@ -1,6 +1,10 @@
 <script setup>
 //deployment容器的健康检查模块
-import { ref, reactive } from 'vue';
+import { ref, reactive,markRaw } from 'vue';
+import Exec from './ProbeAction/Exec.vue'
+import TcpSocket from './ProbeAction/TcpSocket.vue'
+import HttpGet from './ProbeAction/HttpGet.vue'
+import Grpc from './ProbeAction/Grpc.vue'
 
 const props = defineProps({
     name: {
@@ -13,7 +17,7 @@ const props = defineProps({
     },
     probe: {
         type: Object,
-        required: true
+        default: () => ({})
     }
 })
 
@@ -55,7 +59,13 @@ const data = reactive({
             { value: 'tcpSocket', label: 'TCP连接' },
             { value: 'grpc', label: 'gRPC' },
             { value: 'close', label: '不使用探针' },
-        ]
+        ],
+        probeActionComponentList: {
+            exec: markRaw(Exec),
+            httpGet: markRaw(HttpGet),
+            tcpSocket: markRaw(TcpSocket),
+            grpc: markRaw(Grpc),
+        }
     }
 })
 
@@ -96,24 +106,42 @@ const changeProbeHandlerType = () => {
             </span>
         </div>
         <div v-if="data.options.selectType !== 'close'" class="probe-settings">
-            <el-form :model="probeBasicConfig" label-width="120px">
-                <el-form-item label="初始延迟时间">
-                    <el-input-number v-model="probeBasicConfig.initialDelaySeconds" :min="0" :controls="false" />
-                </el-form-item>
-                <el-form-item label="检查周期">
-                    <el-input-number v-model="probeBasicConfig.periodSeconds" :min="1" :controls="false" />
-                </el-form-item>
-                <el-form-item label="超时时间">
-                    <el-input-number v-model="probeBasicConfig.timeoutSeconds" :min="1" :controls="false" />
-                </el-form-item>
-                <el-form-item label="成功阈值">
-                    <el-input-number v-model="probeBasicConfig.successThreshold" :min="1" :controls="false" />
-                </el-form-item>
-                <el-form-item label="失败阈值">
-                    <el-input-number v-model="probeBasicConfig.failureThreshold" :min="1" :controls="false" />
-                </el-form-item>
+            <el-form :model="probeBasicConfig">
+                <el-row :gutter="24">
+                    <el-col :span="12">
+                        <el-form-item label="延迟时间">
+                            <el-input-number v-model="probeBasicConfig.initialDelaySeconds" :min="0" />
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="检查周期">
+                            <el-input-number v-model="probeBasicConfig.periodSeconds" :min="1" />
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="24">
+                    <el-col :span="12">
+                        <el-form-item label="超时时间">
+                            <el-input-number v-model="probeBasicConfig.timeoutSeconds" :min="1" />
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="成功阈值">
+                            <el-input-number v-model="probeBasicConfig.successThreshold" :min="1" />
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="24">
+                    <el-col :span="12">
+                        <el-form-item label="失败阈值">
+                            <el-input-number v-model="probeBasicConfig.failureThreshold" :min="1" />
+                        </el-form-item>
+                    </el-col>
+                </el-row>
             </el-form>
         </div>
+
+        <component :probe-config="probeBasicConfig" v-if="data.options.selectType !== 'close'" :is="data.options.probeActionComponentList[data.options.selectType]" />
         <hr class="divider"/>
     </div>
 </template>

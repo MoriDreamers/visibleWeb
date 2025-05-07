@@ -1,7 +1,7 @@
 <script setup>
 
 //deployment容器的端口配置
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits, } from 'vue';
 
 const props = defineProps({
     ports: {
