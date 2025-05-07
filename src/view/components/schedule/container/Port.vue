@@ -1,4 +1,6 @@
 <script setup>
+
+//deployment容器的端口配置
 import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps({
@@ -81,6 +83,9 @@ const deleteTab = (index) => {
 </template>
 
 <style scoped>
+/*
+<!--把这个输入框 变成铺满页面 美观一下-->
+*/
 .el-input-number {
     width: 100%;
 }

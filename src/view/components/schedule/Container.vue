@@ -7,7 +7,7 @@ import { toRefs } from 'vue';
 import { ElMessage } from 'element-plus';
 import StringToList from './../StringToList.vue'
 import Port from './container/Port.vue'
-
+import CheckHealth from './container/CheckHealth.vue'
 
 //拿到pinia的全局状态管理 
 const useItemer = useItem()
@@ -220,7 +220,7 @@ const seleteChanged = (value) => {
                     <Port :ports="item.ports"> </Port>
                     </el-tab-pane>
                 <el-tab-pane label="健康检查" name="healthcheck">
-                    Role
+                    <CheckHealth :container="item"></CheckHealth>
                 </el-tab-pane>
                 <el-tab-pane label="环境变量" name="env">
                     Task
