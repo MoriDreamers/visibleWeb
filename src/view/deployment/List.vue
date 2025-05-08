@@ -6,10 +6,11 @@ import { getDeploymentListApi as getListItem ,deleteDeploymentApi as deleteItem 
 import { reactive,computed,ref } from 'vue';
 import { ElMessage, ElMessageBox, } from 'element-plus';
 import CodeMirror from '../components/CodeMirror.vue';
-import { toRefs } from 'vue';
+import { toRefs,onMounted } from 'vue';
 import { objToYaml } from '../../utils/utils.js';
 import ViewYMAL from '../components/ViewYMAL.vue';
 import { useRouter } from 'vue-router';
+import { ElNotification } from 'element-plus';
 
 const router = useRouter();
 
@@ -100,6 +101,17 @@ const detail = (row) => {
 }
 
 const {yamlItem} = toRefs(data);
+
+onMounted(() => {
+  waringBox();
+})
+const waringBox = () => {
+    ElNotification({
+    title: '重要提示',
+    message: '目前仅支持编辑字段完整的对象，若非本系统创建的可能会遇到兼容性问题...',
+    type: 'warning',
+  })
+};
 </script>
 
 <template>
