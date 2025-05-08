@@ -15,13 +15,13 @@ export const getDeploymentApi = (clusterId,name,namespace) => {
     console.log("请求获取的Deployment ID",clusterId,name,namespace);
     return request(apiUrl.getDeploymentApi, {clusterId,name,namespace}, "get",2000);
 }
-export const addDeploymentApi = (clusterId,name,item) => { 
-    console.log("请求添加的Deployment配置",clusterId,",",name);
-    return request(apiUrl.addDeploymentApi, {clusterId,name,item}, "post",2000);
+export const addDeploymentApi = (data) => { 
+    console.log("请求添加的Deployment配置",data);
+    return request(apiUrl.addDeploymentApi, data, "post",2000);
 }
 
-export const updateDeploymentApi = (clusterId,name,item) => { 
-    console.log("请求更新的Deployment配置",clusterId,name,item);
-    return request(apiUrl.updataDeploymentApi, clusterId,name,item, "post",2000);
+export const updateDeploymentApi = (data) => { 
+    console.log("请求更新的Deployment配置",data);
+    return request(apiUrl.updataDeploymentApi, data, "post",2000);
 }
 

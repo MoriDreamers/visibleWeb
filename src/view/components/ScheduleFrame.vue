@@ -11,7 +11,7 @@ import { computed } from 'vue';
 import { ElMessage, useTransitionFallthroughEmits } from 'element-plus';
 import Table from './Table.vue';
 import { listToObject,objectToList } from '../../utils/utils';
-import { addDeploymentApi } from '../../api/deployment';
+import { addDeploymentApi,updateDeploymentApi } from '../../api/deployment';
 import { useItem } from '../../store/index.js'
 import { objToYaml } from '../../utils/utils.js';
 import { storeToRefs } from 'pinia';
@@ -19,6 +19,10 @@ import scheduleConfig from './schedule/scheduleConfig.vue';
 import volume from './schedule/Volume.vue';
 import CodeMirror from '../components/CodeMirror.vue';
 import Container from './schedule/Container.vue';
+
+//操作资源时间
+const emits = defineEmits(['submit'])
+
 
 const props = defineProps({
     resourseType: {
@@ -190,7 +194,7 @@ const {item} = storeToRefs(useItem())
 
 
 //提交创建
-const submitItem = () => {
+const submitItem = (tag) => {
     console.log("提交创建", useItemer.item)
 /*     addDeploymentApi(useItemer.item).then((res) => {
         ElMessage.success("创建成功"+res.data.message);
@@ -223,48 +227,65 @@ const submitItem = () => {
     useItemer.item.spec.selector.matchLabels = podLabelObj
 //处理调度配置
     useItemer.item.spec.template.spec.nodeSelector = listToObject(data.options.nodeSelectorList)
-
+    submitHandler(tag)
 }
 
-//查看YAML
-const yamlItem = ref("")
-const showDetailDialog = ref(false)
-const detailYaml = () => {
-    
-//把一些选择框的数据进行处理我们暂时写在了submit里面 后续需要优化
-submitItem()
-    console.log("查看YAML", useItemer.item)
-    const itemCopy = JSON.parse(JSON.stringify(item.value)); // 要加 .value
-    const yamlData = objToYaml(itemCopy);
-    yamlItem.value = yamlData; // 正确赋值方式
-    showDetailDialog.value = true;
+/*
+        //查看YAML
+        const yamlItem = ref("")
+        const showDetailDialog = ref(false)
+        const detailYaml = () => {
+            
+        //把一些选择框的数据进行处理我们暂时写在了submit里面 后续需要优化submitItem()
+
+            console.log("查看YAML!!", useItemer.item)
+            const itemCopy = JSON.parse(JSON.stringify(item.value)); // 要加 .value
+            const yamlData = objToYaml(itemCopy);
+            yamlItem.value = yamlData; // 正确赋值方式
+            showDetailDialog.value = true;
+        }
+*/
+
+const submitHandler = (tag) => {
+    itemRef.value.validate((valid) => {
+        if(valid){
+            //如果成功了就调用emits
+            emits('submit', tag,data.autoCreateService)
+        } else {
+            ElMessage({
+                type:'warning',
+                message:'请检查输入内容'
+            })
+        }
+    })
 }
-
-
 </script>
 
 <template>
+<!--    
+    //查看YAML
     <el-dialog destroy-on-close v-model="showDetailDialog" :title="'Deployment详情'" width=50% >
         <CodeMirror
         v-model="yamlItem"
         >
         </CodeMirror>
     </el-dialog>
+-->
 
     <div style="display: flex;align-items: center;justify-content: space-between;margin-bottom: 10px;">
         <div>
           <span style="font-weight: bold;color:#000000c9;font-size: 16px;">创建Deployment</span>
         </div>
         <div>
-            <el-button type="primary" @click="detailYaml">YAML</el-button>
-            <el-button type="default" @click="submitItem">{{props.method === 'create'? '创建' : '更新'}}</el-button>
+            <el-button type="primary" @click="submitItem('yaml')">YAML</el-button>
+            <el-button type="default" @click="submitItem()">{{props.method === 'create'? '创建' : '更新'}}</el-button>
         </div>
     </div>
 
     <div class="main">
-        <!--  资源表单 -->
+        <!--  资源表单 原本是v-model="item" 现在改成:model="item"-->
         <el-form
-        v-model="item"
+        :model="item"
         ref = "itemRef"
         >
         <!-- 外层的TABS -->

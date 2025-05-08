@@ -73,15 +73,19 @@ const removeTab = (targetName) => {
 
 
 onBeforeMount(() => {
-    if (props.containerType !== 'container'){
+    if (props.containerType !== 'container') {
+        // 如果是 init 容器，就不包含 lifecycle 字段
+        delete data.container.lifecycle
+    }
+    if (props.containerType !== 'container') {
         data.containers = useItemer.item.spec.template.spec.initContainers
-    }else{
+    } else {
         data.containers = useItemer.item.spec.template.spec.containers
     }
-        containerNum.value = data.containers.length
-              if (data.containers.length === 0){
-                addTab()
-        }
+    containerNum.value = data.containers.length
+    if (data.containers.length === 0) {
+        addTab()
+    }
 })
 
 const addTab = () => {
