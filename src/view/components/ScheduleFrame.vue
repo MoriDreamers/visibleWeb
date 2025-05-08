@@ -1,6 +1,6 @@
 <script setup>
 //这是调度资源的模板
-import { ref } from 'vue'
+import { onBeforeMount, readonly, ref } from 'vue'
 const activeName = ref('basic') // 当前激活的tab
 import ClusterAndNamespaceSelector from './ClusterAndNamespaceSelector.vue';
 import StringAndNumberSupport from './StringAndNumberSupport.vue';
@@ -19,6 +19,7 @@ import scheduleConfig from './schedule/scheduleConfig.vue';
 import volume from './schedule/Volume.vue';
 import CodeMirror from '../components/CodeMirror.vue';
 import Container from './schedule/Container.vue';
+import { clusterRoutes } from '../../router/cluster.js';
 
 //操作资源时间
 const emits = defineEmits(['submit'])
@@ -31,7 +32,7 @@ const props = defineProps({
     },
     method: {
         type: String,
-        default: "create"
+        default: "add"
     },
 })
 
@@ -259,6 +260,18 @@ const submitHandler = (tag) => {
         }
     })
 }
+
+onBeforeMount(()=>{
+    if(props.method !== 'add'){
+        autoCreateLabel.value = 'false'
+          // 把当前存在的label转成list
+        console.log("当前的标签配置：", useItemer.item.metadata.labels)
+        data.options.controllerAnnoList = objectToList(useItemer.item.metadata.annotations)
+        data.options.controllerLabelList = objectToList(useItemer.item.metadata.labels)
+        data.options.podAnnoList = objectToList(useItemer.item.spec.template.metadata.annotations)
+        data.options.podLabelList = objectToList(useItemer.item.spec.template.metadata.labels)
+    }
+})
 </script>
 
 <template>
@@ -274,11 +287,11 @@ const submitHandler = (tag) => {
 
     <div style="display: flex;align-items: center;justify-content: space-between;margin-bottom: 10px;">
         <div>
-          <span style="font-weight: bold;color:#000000c9;font-size: 16px;">创建Deployment</span>
+          <span style="font-weight: bold;color:#000000c9;font-size: 16px;">{{props.method === 'add'? '创建' : '更新'}}Deployment</span>
         </div>
         <div>
             <el-button type="primary" @click="submitItem('yaml')">YAML</el-button>
-            <el-button type="default" @click="submitItem()">{{props.method === 'create'? '创建' : '更新'}}</el-button>
+            <el-button type="default" @click="submitItem()">{{props.method === 'add'? '创建' : '更新'}}</el-button>
         </div>
     </div>
 
@@ -301,15 +314,15 @@ const submitHandler = (tag) => {
                     </div>-->
                     
                     <div style="display: flex;justify-content: space-between;width: 100%">
-                        <ClusterAndNamespaceSelector @namespaceChangedRollback="namespaceRollback"></ClusterAndNamespaceSelector>
+                        <ClusterAndNamespaceSelector @namespaceChangedRollback="namespaceRollback" :clusterReadOnly="props.method == 'update'" :namespaceReadOnly="props.method == 'update'"></ClusterAndNamespaceSelector>
                     </div>
                 </div>
                 <div class="basic-body">
                     <!-- 第一行 -->
                     <el-row :gutter="20">
                         <el-col :span="6">
-                            <el-form-item label="名称" prop="item.metadata.name">
-                                <el-input v-model.trim="item.metadata.name" placeholder="请输入Deployment名称"></el-input>
+                            <el-form-item label="名称" prop="item.metadata.name" >
+                                <el-input :disabled="props.method == 'update'" v-model.trim="item.metadata.name" placeholder="请输入Deployment名称"></el-input>
                             </el-form-item>
                         </el-col>
 
@@ -409,7 +422,7 @@ const submitHandler = (tag) => {
                     <!-- 第三行 -->
                       <el-row :gutter="20">
                         <el-col :span="12">
-                            <el-form-item label="更新方式" prop="spec.strategy" >
+                            <el-form-item label="更新方式" prop="spec.strategy" v-if="props.method !== 'update'">
                                 <el-radio-group v-model="autoCreateLabel">
                                     <el-radio value="true" size="large">自动生成</el-radio>
                                     <el-radio value="false" size="large">手动配置</el-radio>
@@ -417,7 +430,7 @@ const submitHandler = (tag) => {
                             </el-form-item>
                         </el-col>
 
-                        <el-col :span="6">
+                        <el-col :span="6" v-if="props.method !== 'update'">
                             <el-form-item label="自动添加Service" prop="" >
                                 <el-switch
                                 v-model="autoCreateService"
@@ -444,7 +457,7 @@ const submitHandler = (tag) => {
                             <el-tab-pane label="POD注释" name="podAnno">
                                 <Table :list="options.podAnnoList"></Table>
                             </el-tab-pane>
-                            <el-tab-pane label="POD标签" name="podLabel">
+                            <el-tab-pane label="POD标签" name="podLabel" :readonly="props.method == 'update'">
                                 <Table :list="options.podLabelList"></Table>
                             </el-tab-pane>
                           </el-tabs>

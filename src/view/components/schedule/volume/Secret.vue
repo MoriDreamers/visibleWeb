@@ -95,6 +95,9 @@ const addItem = () => {
     path: '',
     mode: null
   }
+  if(!data.newVolumeConfig.secret.items){
+    data.newVolumeConfig.secret.items = []
+  }
   data.newVolumeConfig.secret.items.unshift(newItem)
 }
 </script>

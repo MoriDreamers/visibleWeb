@@ -11,6 +11,12 @@ const props = defineProps({
         type: Boolean,
         default: true
     },
+    clusterReadOnly: {
+        type: Boolean,
+    },
+    namespaceReadOnly: {
+        type: Boolean,
+    },
 })
 
 
@@ -83,6 +89,7 @@ onMounted(async() => {
     
 })
 
+const { clusterReadOnly, namespaceReadOnly, } = toRefs(props)
 const {clusterId,clusterList,namespace,namespaceList} = toRefs(data)
 
 </script>
@@ -94,7 +101,7 @@ const {clusterId,clusterList,namespace,namespaceList} = toRefs(data)
             :key="item.id"
             :label="item.id"
             :value="item.id"
-            :disabled="item.status == 'InActive'"
+            :disabled="item.status == 'InActive' || clusterReadOnly"
         />
     </el-select>
     
@@ -103,6 +110,7 @@ const {clusterId,clusterList,namespace,namespaceList} = toRefs(data)
         :key="items.metadata.name"
         :label="items.metadata.name"
         :value="items.metadata.name"
+        :disabled="namespaceReadOnly"
         />
     </el-select>
 

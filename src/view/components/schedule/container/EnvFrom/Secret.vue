@@ -18,6 +18,9 @@ const props = defineProps({
 //自动关闭dialog
 const emit = defineEmits(['close'])
 const addHandler = () => {
+    if(!props.envFrom){
+        props.envFrom = []
+    }
     props.envFrom.unshift(data.envFromItems)
     emit('close')
 }

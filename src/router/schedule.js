@@ -44,6 +44,10 @@ export const deploymentRoutes = {
         {
             path: 'add',
             component: ()=>import ('../view/deployment/Add.vue')
+        },
+        {
+            path: 'edit',
+            component: ()=>import ('../view/deployment/Edit.vue')
         }
     ]
 }

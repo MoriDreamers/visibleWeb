@@ -11,9 +11,9 @@ export const deleteDeploymentApi = (clusterId,name,namespace) => {
     console.log("请求删除的Deployment ID",name,namespace);
     return request(apiUrl.deleteDeploymentApi, {clusterId,name,namespace}, "post",2000);
 }
-export const getDeploymentApi = (clusterId,name,namespace) => { 
-    console.log("请求获取的Deployment ID",clusterId,name,namespace);
-    return request(apiUrl.getDeploymentApi, {clusterId,name,namespace}, "get",2000);
+export const getDeploymentApi = (data) => { 
+    console.log("请求获取的Deployment ID",data);
+    return request(apiUrl.getDeploymentApi, data, "get",2000);
 }
 export const addDeploymentApi = (data) => { 
     console.log("请求添加的Deployment配置",data);

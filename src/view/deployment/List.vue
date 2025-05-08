@@ -9,7 +9,9 @@ import CodeMirror from '../components/CodeMirror.vue';
 import { toRefs } from 'vue';
 import { objToYaml } from '../../utils/utils.js';
 import ViewYMAL from '../components/ViewYMAL.vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 
 const data = reactive({
     items: [],
@@ -36,8 +38,28 @@ const deleteHandle = (row) => {
       })
       getList() 
     })
+  })
+}
+
+const editHandle = (name) => {
+    ElMessageBox.confirm(
+    '正在尝试编辑Deployment: '+name+'，是否继续？',
+    '请注意',
+    {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  ).then(() => {
+      router.push({
+      path: '/deployment/edit',
+      query: {
+        name: name,
+        clusterId: data.clusterId,
+        namespace: data.namespace
+      }
     })
-    
+  })
 }
 
 //利用回调函数查询Deployment列表
@@ -135,6 +157,7 @@ const {yamlItem} = toRefs(data);
                   <template #default="scope">
                     <!-- row传递时包含完整的对象信息，即后端返回的list对应的list[row],的对象信息，包括metadata、status等，可以直接使用，不需要再次请求API -->
                     <el-button  :disabled="scope.row.metadata.deletionTimestamp" link type="danger"  @click="deleteHandle(scope.row)">删除</el-button>
+                    <el-button  :disabled="scope.row.metadata.deletionTimestamp" link type="primary"  @click="editHandle(scope.row.metadata.name)">编辑</el-button>
                     <el-button  :disabled="scope.row.metadata.deletionTimestamp" link type="info"  @click="(scope.row)">日志</el-button>
                   </template>
                 </el-table-column>

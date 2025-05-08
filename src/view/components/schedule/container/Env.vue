@@ -29,6 +29,9 @@ const addTab = () => {
         name: '',
         value: '',
     })
+    if(!props.env){
+        props.env = []
+    }
     props.env.unshift(newEnv)
 }
 

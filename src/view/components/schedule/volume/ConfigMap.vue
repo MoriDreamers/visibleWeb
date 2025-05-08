@@ -95,6 +95,9 @@ const addItem = () => {
     path: '',
     mode: null
   }
+  if(!data.newVolumeConfig.configMap.items){
+    data.newVolumeConfig.configMap.items = []
+  }
   data.newVolumeConfig.configMap.items.unshift(newItem)
 }
 </script>

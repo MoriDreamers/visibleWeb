@@ -19,6 +19,9 @@ const props = defineProps({
     },
 })
 const addHandler = () => {
+    if(!props.envFrom){
+        props.envFrom = []
+    }
     props.envFrom.unshift(data.envFromItems)
     emit('close')
 }

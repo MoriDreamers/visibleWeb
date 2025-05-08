@@ -22,8 +22,10 @@ const props = defineProps({
   }
 })
 
+
+//使用计算属性来监听showDetailDialog的变化
 const yamlData = ref("");
-let visible = computed({
+let visible = computed({ 
   get: () => props.showDetailDialog,
   set: (value) => {
     emits('beforeClose', value);

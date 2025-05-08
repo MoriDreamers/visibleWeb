@@ -5,6 +5,7 @@ import Exec from './ProbeAction/Exec.vue'
 import TcpSocket from './ProbeAction/TcpSocket.vue'
 import HttpGet from './ProbeAction/HttpGet.vue'
 import Grpc from './ProbeAction/Grpc.vue'
+import { onMounted } from 'vue';
 
 const props = defineProps({
     name: {
@@ -88,6 +89,24 @@ const changeProbeHandlerType = () => {
         emits('propChangeRollBack', probeBasicConfig)
     }
 }
+
+onMounted(() => {
+    if (props.probe.exec) {
+        data.options.selectType = 'exec'
+        probeBasicConfig.exec = props.probe.exec
+    } else if (props.probe.httpGet) {
+        data.options.selectType = 'httpGet'
+        probeBasicConfig.httpGet = props.probe.httpGet
+    } else if (props.probe.tcpSocket) {
+        data.options.selectType = 'tcpSocket'
+        probeBasicConfig.tcpSocket = props.probe.tcpSocket
+    } else if (props.probe.grpc) {
+        data.options.selectType = 'grpc'
+        probeBasicConfig.grpc = props.probe.grpc
+    } else {
+        data.options.selectType = 'close'
+    }
+})
 </script>
 
 <template>
