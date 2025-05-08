@@ -9,8 +9,8 @@ import StringToList from './../StringToList.vue'
 import Port from './container/Port.vue'
 import VolumeMount from './container/VolumeMount.vue'
 import CheckHealth from './container/CheckHealth.vue'
-
-
+import Env from './container/Env.vue'
+import LifeCycle from './container/LifeCycle.vue'
 //拿到pinia的全局状态管理 
 const useItemer = useItem()
 const { item } = storeToRefs(useItem());
@@ -40,7 +40,9 @@ const data = reactive({
         ports:[],
         lifecycle:{},
         volumeMounts:[],
-    },
+        env:[],
+        envFrom:[],
+    }, 
     options:{
         imagePullPolicyList:[
             { value: 'IfNotPresent', label: '未找到就拉取' },
@@ -107,7 +109,7 @@ const seleteChanged = (value) => {
 
     <div style="display: flex;justify-content: flex-start;margin-bottom: 13px;">
         <el-button size="small" @click="addTab(editableTabsValue)" >
-          点击此处添加新的{{props.containerType}}
+          点击添加新卡片
         </el-button>
       </div>
 
@@ -220,20 +222,20 @@ const seleteChanged = (value) => {
 
                     </div>
                 </el-tab-pane>
-                <el-tab-pane label="端口配置" name="ports">
+                <el-tab-pane v-if="props.containerType === 'container'" label="端口配置" name="ports">
                     <Port :ports="item.ports"> </Port>
                     </el-tab-pane>
-                <el-tab-pane label="健康检查" name="healthcheck">
+                <el-tab-pane v-if="props.containerType === 'container'" label="健康检查" name="healthcheck">
                     <CheckHealth :container="item"></CheckHealth>
                 </el-tab-pane>
                 <el-tab-pane label="环境变量" name="env">
-                    Task
+                    <Env :env="item.env" :envFrom="item.envFrom"></Env>
                 </el-tab-pane>
                 <el-tab-pane label="挂载存储" name="volume">
                     <VolumeMount :volumeMounts="item.volumeMounts"></VolumeMount>
                 </el-tab-pane>
-                <el-tab-pane label="生命周期" name="life">
-                    Task
+                <el-tab-pane v-if="props.containerType === 'container'" label="生命周期" name="lifecycle">
+                    <LifeCycle :lifecycle="item.lifecycle"></LifeCycle>
                 </el-tab-pane>
               </el-tabs>
 
