@@ -8,7 +8,7 @@ import { ElMessage, ElMessageBox, } from 'element-plus';
 import CodeMirror from '../components/CodeMirror.vue';
 import { toRefs } from 'vue';
 import { objToYaml } from '../../utils/utils.js';
-
+import ViewYMAL from '../components/ViewYMAL.vue';
 
 
 const data = reactive({
@@ -143,13 +143,17 @@ const {yamlItem} = toRefs(data);
         </template>
     </List>
 
-    <el-dialog destroy-on-close v-model="showDetailDialog" :title="'Deployment详情'" width=50% >
+<!--<el-dialog destroy-on-close v-model="showDetailDialog" :title="'Deployment详情'" width=50% >
       <CodeMirror
       v-model="yamlItem"
       >
       </CodeMirror>
-<!--       <el-button type="primary" @click="" style="margin-top: 10px;" >确认</el-button> -->
   </el-dialog>
+-->    
+
+  <ViewYMAL :clusterId="data.clusterId" :namespace="data.namespace" :showDetailDialog="showDetailDialog" :yamlContent="yamlItem" 
+  @before-close="(value)=>{showDetailDialog = value}"
+  />
 </template>
 
 <style scoped>
