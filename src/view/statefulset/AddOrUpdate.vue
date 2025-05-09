@@ -20,6 +20,10 @@ const props = defineProps({
     method: {
         type: String,
         default: 'add'
+    },
+    resourseType: {
+        type: String,
+        default: 'StatefulSet'
     }
 })
 
@@ -78,7 +82,7 @@ const {clusterId,namespace,} = storeToRefs(useItemer)
 </script>
 
 <template>
-    <ScheduleFrame @submit="submit" :method="props.method"></ScheduleFrame>
+    <ScheduleFrame @submit="submit" :method="props.method" :resourseType="props.resourseType"></ScheduleFrame>
     <ViewYMAL :clusterId="clusterId" :namespace="namespace" :showDetailDialog="showDetailDialog" :yamlContent="yamlItem" 
     @before-close="(value)=>{showDetailDialog = value}"
     />

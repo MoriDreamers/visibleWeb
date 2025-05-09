@@ -24,7 +24,7 @@ onBeforeMount(async() => {
 </script>
 
 <template>
-    <AddOrUpdate v-if="isDataLoaded" method="update" />
+    <AddOrUpdate v-if="isDataLoaded" method="update" resourseType="Deployment" />
 </template>
 
 <style scoped>

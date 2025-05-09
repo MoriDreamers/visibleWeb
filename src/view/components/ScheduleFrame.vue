@@ -95,10 +95,7 @@ const data = reactive ({
             label:"不设置",
         },
     ],
-    autoCreateService:{
-        type:Boolean,
-        value:true,
-    },
+    autoCreateService:true,
     options:{
         controllerAnnoList:[
 
@@ -193,7 +190,7 @@ const autoCreateLabel = ref('true')
 //标签页面
 const labelActiveName = ref('controllerAnno')
 
-const { registryList,dnsPolicyList ,autoCreateService,options} = toRefs(data);
+const { registryList,dnsPolicyList ,options} = toRefs(data);
 
 //把ITEM作为pinia的全局状态管理
 const {item} = storeToRefs(useItem())
@@ -234,7 +231,7 @@ const submitItem = (tag) => {
 //处理调度配置
     useItemer.item.spec.template.spec.nodeSelector = listToObject(data.options.nodeSelectorList)
     //处理自动添加Service
-    if (autoCreateService.value && props.resourseType == "Deployment"){
+    if (data.autoCreateService && props.resourseType == "StatefulSet"){
         useItemer.item.spec.serviceName = useItemer.item.metadata.name
     }
     submitHandler(tag)
@@ -316,7 +313,10 @@ const initItemStructure = () => {
 }
 
 //查询service列表
-const serviceChanged = async () => {
+const serviceChanged  = () => {
+    console.log("serviceChanged", data.autoCreateService)
+            if(data.autoCreateService){return}
+    useItemer.item.spec.serviceName = ""
         const getServiceListParam = {
             clusterId: data.clusterId,
             namespace: data.namespace,
@@ -332,6 +332,7 @@ const serviceChanged = async () => {
                 }
             })
         })
+
 }
 
 onBeforeMount(() => {
@@ -518,23 +519,26 @@ onBeforeMount(() => {
                         </el-col>
 
                         <el-col :span="12" v-if="props.method !== 'update'" >
+                           <!-- 自动添加Service
                             <el-form-item label="自动添加Service" prop="" v-if="props.resourseType == 'Deployment' || props.resourseType == 'DaemonSet'">
                                 <el-switch
-                                v-model="autoCreateService.value"
+                                v-model="data.autoCreateService"
                                 active-text="启用"
                                 inactive-text="禁用"
                                 >
                                 </el-switch>
                             </el-form-item>
+ -->
+                            
                             <el-form-item label="绑定Service" prop="" v-if="props.resourseType == 'StatefulSet'">
-                                <el-radio-group v-model="autoCreateService.value" @change="serviceChanged">
+                                <el-radio-group v-model="data.autoCreateService" @change="serviceChanged">
                                     <el-radio :value="true" size="large">自动添加Service</el-radio>
                                     <el-radio :value="false" size="large">手动绑定Service</el-radio>
                                 </el-radio-group>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="6" v-if="!autoCreateService.value && props.resourseType == 'StatefulSet'">
-                            <el-form-item label="Service列表" prop="" >
+                        <el-col :span="6" v-if="!data.autoCreateService && props.resourseType == 'StatefulSet'">
+                            <el-form-item label="* Service列表" prop="" >
                                 <el-select v-model="item.spec.serviceName" placeholder="请选择Service">
                                     <el-option v-for="s in data.options.serviceList" :key="s.metadata.name" :label="s.metadata.name" :value="s.metadata.name"></el-option>
                                 </el-select>

@@ -2,7 +2,7 @@
 
 import List from '../components/List.vue';
 import ClusterAndNamespaceSelector from '../components/ClusterAndNamespaceSelector.vue';
-import { getDeploymentListApi as getListItem ,deleteDeploymentApi as deleteItem ,getDeploymentApi as getItem,addDeploymentApi as addItem,updateDeploymentApi as updateItem } from '../../api/deployment.js';
+import { getStatefulSetListApi as getListItem ,deleteStatefulSetApi as deleteItem ,getStatefulSetApi as getItem,addStatefulSetApi as addItem,updateStatefulSetApi as updateItem } from '../../api/StatefulSet.js';
 import { reactive,computed,ref } from 'vue';
 import { ElMessage, ElMessageBox, } from 'element-plus';
 import CodeMirror from '../components/CodeMirror.vue';
@@ -24,7 +24,7 @@ const data = reactive({
 
 const deleteHandle = (row) => {
     ElMessageBox.confirm(
-    '正在尝试删除Deployment'+row.metadata.name+'，是否继续？',
+    '正在尝试删除StatefulSet'+row.metadata.name+'，是否继续？',
     '请注意',
     {
       confirmButtonText: '确认',
@@ -44,7 +44,7 @@ const deleteHandle = (row) => {
 
 const editHandle = (name) => {
     ElMessageBox.confirm(
-    '正在尝试编辑Deployment: '+name+'，是否继续？',
+    '正在尝试编辑StatefulSet: '+name+'，是否继续？',
     '请注意',
     {
       confirmButtonText: '确认',
@@ -53,7 +53,7 @@ const editHandle = (name) => {
     }
   ).then(() => {
       router.push({
-      path: '/deployment/edit',
+      path: '/StatefulSet/edit',
       query: {
         name: name,
         clusterId: data.clusterId,
@@ -63,15 +63,15 @@ const editHandle = (name) => {
   })
 }
 
-//利用回调函数查询Deployment列表
+//利用回调函数查询StatefulSet列表
 const getList = async () => {
   try {
     const res = await getListItem(data.clusterId, data.namespace);
     data.items = res?.data?.items || [];
-    console.log('Deployment list:', data.items);
+    console.log('StatefulSet list:', data.items);
   } catch (error) {
     data.items = [];
-    console.error('获取Deployment列表失败:', error);
+    console.error('获取StatefulSet列表失败:', error);
   }
 }
 
@@ -91,7 +91,7 @@ const detail = (row) => {
   //补充client-go省略的数据
   const itemtemp = {
     apiVersion: "apps/v1",
-    kind: "Deployment",
+    kind: "StatefulSet",
     metadata: item.metadata,
     spec: item.spec,
   };
@@ -115,7 +115,7 @@ const waringBox = () => {
 </script>
 
 <template>
-    <List title="管理Deployment">
+    <List title="管理StatefulSet">
         <template #headerOptins>
             <ClusterAndNamespaceSelector @namespaceChangedRollback="rollback"></ClusterAndNamespaceSelector>
         </template>
@@ -150,18 +150,11 @@ const waringBox = () => {
 
                 <el-table-column prop="metadata.creationTimestamp" label="创建时间" width="180" sortable /> 
 
-                <el-table-column align="center" prop="" label="禁止调度" width="180" >
+                <el-table-column align="center" prop="" label="无头服务" width="180" >
                     <template #default="scope">
-                       <el-switch v-model="scope.row.spec.paused"></el-switch>
+                       {{ scope.row.spec.serviceName }}
                       </template>
                 </el-table-column>   
-
-                <el-table-column prop="" label="暂停更新" width="120"  /> 
-
-                <el-table-column prop="spec.nodeName" label="宿主机" width="120"  /> 
-
-                <el-table-column prop="status.hostIP" label="宿主机IP" width="120"  /> 
-
                 
                 <el-table-column prop="metadata.namespace" label="命名空间" width="120" /> 
 
@@ -178,7 +171,7 @@ const waringBox = () => {
         </template>
     </List>
 
-<!--<el-dialog destroy-on-close v-model="showDetailDialog" :title="'Deployment详情'" width=50% >
+<!--<el-dialog destroy-on-close v-model="showDetailDialog" :title="'StatefulSet详情'" width=50% >
       <CodeMirror
       v-model="yamlItem"
       >

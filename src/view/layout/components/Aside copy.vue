@@ -184,7 +184,7 @@ const defaultOpenMenus = MenuConfig().map(menu => menu.index);
     background: #ffffff;
     height: 100%;
     width: 100%;
-    position: relative;
+    position: relative ;
     border: none;
     overflow: hidden;
     box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0.1);

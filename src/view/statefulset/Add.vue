@@ -4,7 +4,7 @@ import AddOrUpdate from './AddOrUpdate.vue';
 </script>
 
 <template>
-    <AddOrUpdate method="add" />
+    <AddOrUpdate  method="add" resourseType="StatefulSet" />
 </template>
 
 <style scoped>
