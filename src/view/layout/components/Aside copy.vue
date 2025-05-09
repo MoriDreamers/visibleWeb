@@ -44,8 +44,8 @@ const defaultOpenMenus = MenuConfig().map(menu => menu.index);
 <template>
 
     <el-aside width="250px" class="el-aside"  >
-      
       <div class="el-aside-logo">      
+        
         <div class="gearbox">
           <div class="overlay"></div>
             <div class="gear one">
@@ -78,13 +78,8 @@ const defaultOpenMenus = MenuConfig().map(menu => menu.index);
                 <div class="bar"></div>
                 <div class="bar"></div>
               </div>
-              <div class="logo-k8s" @click="colorEggCount">
-                Visible.K8S
-              </div>
             </div>
           </div>
-
-          
       </div>
 
       <div class="menu">
@@ -141,38 +136,6 @@ const defaultOpenMenus = MenuConfig().map(menu => menu.index);
 </template>
 
 <style lang="less" scoped>
-@keyframes breathing {
-  0% {
-    text-shadow: 0 0 30px rgba(0, 136, 255, 0.7);
-  }
-  50% {
-    text-shadow: 0 0 50px rgba(0, 136, 255, 0.6);
-  }
-  100% {
-    text-shadow: 0 0 40px rgba(0, 136, 255, 0.3);
-  }
-}
-
-.logo-k8s {
-  cursor: pointer;
-  position: absolute;
-  user-select: none;
-  bottom: 84px;
-  right: 66px;
-  color: rgb(240, 240, 255);
-  padding: 3px 8px;
-  font-weight: bold;
-  font-size: 20px;
-  z-index: 15;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-
-.logo-k8s:hover {
-
-  animation: breathing 2s infinite ease-in-out;
-}
-
-
   .el-aside {
     box-sizing: border-box;
     width: 250px;
@@ -193,7 +156,7 @@ const defaultOpenMenus = MenuConfig().map(menu => menu.index);
   }
 
   .el-aside-logo {
-    height: 60px;
+    height: 100px;
     width: 100%;
   }
 
@@ -218,7 +181,7 @@ const defaultOpenMenus = MenuConfig().map(menu => menu.index);
   }
   
   .gearbox {
-    background: #111;
+    background: #ffffff;
     height: 100%;
     width: 100%;
     position: relative;
@@ -235,7 +198,7 @@ const defaultOpenMenus = MenuConfig().map(menu => menu.index);
     width: 100%;
     height: 100%;
     z-index: 10;
-    box-shadow: inset 0px 0px 20px black;
+
     transition: background 0.2s;
   }
   
@@ -291,7 +254,7 @@ const defaultOpenMenus = MenuConfig().map(menu => menu.index);
     height: 36px;
     width: 36px;
     border-radius: 36px;
-    background: #111;
+    background: #dcdcdc;
     top: 50%;
     left: 50%;
     margin-left: -18px;

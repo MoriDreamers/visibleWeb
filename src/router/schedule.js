@@ -28,6 +28,10 @@ export const statefulsetRoutes = {
         {
             path: 'add',
             component: ()=>import ('../view/statefulset/Add.vue')
+        },
+        {
+            path: 'edit',
+            component: ()=>import ('../view/statefulset/Edit.vue')
         }
     ]
 }

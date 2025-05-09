@@ -1,9 +1,10 @@
 <script setup>
+import AddOrUpdate from './AddOrUpdate.vue';
 
 </script>
 
 <template>
-    添加
+    <AddOrUpdate method="add" />
 </template>
 
 <style scoped>
