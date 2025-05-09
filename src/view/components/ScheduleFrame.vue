@@ -261,15 +261,74 @@ const submitHandler = (tag) => {
     })
 }
 
-onBeforeMount(()=>{
+const initItemStructure = () => {
+    // 确保spec.template.spec存在
+    if (!data.item.spec.template.spec) {
+        data.item.spec.template.spec = {
+            containers: [],
+            imagePullSecrets: [],
+            dnsPolicy: []
+        };
+    }
+    
+    // 确保containers数组存在且至少有一个容器
+    if (!data.item.spec.template.spec.containers || data.item.spec.template.spec.containers.length === 0) {
+        data.item.spec.template.spec.containers = [{
+            name: '',
+            image: '',
+            resources: {
+                requests: {
+                    memory: '',
+                    cpu: ''
+                },
+                limits: {
+                    memory: '',
+                    cpu: ''
+                }
+            }
+        }];
+    }
+    
+    // 确保每个容器都有resources对象
+    data.item.spec.template.spec.containers.forEach(container => {
+        if (!container.resources) {
+            container.resources = {
+                requests: {
+                    memory: '',
+                    cpu: ''
+                },
+                limits: {
+                    memory: '',
+                    cpu: ''
+                }
+            };
+        }
+    });
+}
+
+onBeforeMount(() => {
+    initItemStructure();
     if(props.method !== 'add'){
         autoCreateLabel.value = 'false'
-          // 把当前存在的label转成list
+        // 确保metadata和template.metadata存在
+        if (!useItemer.item.metadata) {
+            useItemer.item.metadata = {
+                labels: {},
+                annotations: {}
+            };
+        }
+        if (!useItemer.item.spec.template.metadata) {
+            useItemer.item.spec.template.metadata = {
+                labels: {},
+                annotations: {}
+            };
+        }
+        // 把当前存在的label转成list
         console.log("当前的标签配置：", useItemer.item.metadata.labels)
-        data.options.controllerAnnoList = objectToList(useItemer.item.metadata.annotations)
-        data.options.controllerLabelList = objectToList(useItemer.item.metadata.labels)
-        data.options.podAnnoList = objectToList(useItemer.item.spec.template.metadata.annotations)
-        data.options.podLabelList = objectToList(useItemer.item.spec.template.metadata.labels)
+        data.options.controllerAnnoList = objectToList(useItemer.item.metadata.annotations || {})
+        data.options.controllerLabelList = objectToList(useItemer.item.metadata.labels || {})
+        data.options.podAnnoList = objectToList(useItemer.item.spec.template.metadata.annotations || {})
+        data.options.podLabelList = objectToList(useItemer.item.spec.template.metadata.labels || {})
     }
 })
 </script>
@@ -438,6 +497,14 @@ onBeforeMount(()=>{
                                 inactive-text="禁用"
                                 >
                                 </el-switch>
+                            </el-form-item>
+                        </el-col>
+                      </el-row>
+
+                      <el-row :gutter="20">
+                        <el-col :span="6">
+                            <el-form-item label="最小内存" prop="item.resources.requests.memory" v-if="data.item.spec.template.spec.containers && data.item.spec.template.spec.containers[0].resources">
+                                <el-input v-model="data.item.spec.template.spec.containers[0].resources.requests.memory" placeholder="请输入最小内存"></el-input>
                             </el-form-item>
                         </el-col>
                       </el-row>

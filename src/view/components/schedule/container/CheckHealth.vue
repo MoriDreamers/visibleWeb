@@ -8,14 +8,14 @@ const props = defineProps({
     }
 })
 
-onBeforeMount(() => {
+/*onBeforeMount(() => {
     //检查字段是否完整 没有就加上
     if(!props.container.hasOwnProperty('startupProbe')){
         props.container.startupProbe = {
         }
     }
 })
-
+*/
 
 
 </script>

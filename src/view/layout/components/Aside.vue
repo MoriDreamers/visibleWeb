@@ -35,6 +35,10 @@ const colorEgg = () => {
     type: 'success',
   })
 };
+
+//用于默认展开菜单
+const defaultOpenMenus = MenuConfig().map(menu => menu.index);
+
 </script>
 
 <template>
@@ -48,7 +52,7 @@ const colorEgg = () => {
 
       <div class="menu">
           <el-menu
-        
+          :default-openeds="defaultOpenMenus"
           active-text-color="#ffe9e3"
           background-color="#545c64"
           class="el-menu-vertical-demo"

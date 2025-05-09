@@ -45,6 +45,12 @@ export const apiUrl = {
     getIngressListApi: `${BASE_URL}/api/ingress/list`,
     //secret资源
     getSecretListApi: `${BASE_URL}/api/secret/list`,
+    //statefulset资源
+    getStatefulSetListApi: `${BASE_URL}/api/statefulset/list`,
+    getStatefulSetApi: `${BASE_URL}/api/statefulset/get`,
+    deleteStatefulSetApi: `${BASE_URL}/api/statefulset/delete`,
+    updataStatefulSetApi:`${BASE_URL}/api/statefulset/update`,
+    addStatefulSetApi:`${BASE_URL}/api/statefulset/add`,
 }
 export const apiHeader = {
     TokenName: "Authorization",
