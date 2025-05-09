@@ -13,6 +13,7 @@ import Table from './Table.vue';
 import { listToObject,objectToList } from '../../utils/utils';
 import { addDeploymentApi,updateDeploymentApi } from '../../api/deployment';
 import { useItem } from '../../store/index.js'
+import { getServiceListApi } from '../../api/service.js';
 import { objToYaml } from '../../utils/utils.js';
 import { storeToRefs } from 'pinia';
 import scheduleConfig from './schedule/scheduleConfig.vue';
@@ -94,7 +95,10 @@ const data = reactive ({
             label:"不设置",
         },
     ],
-    autoCreateService:false,
+    autoCreateService:{
+        type:Boolean,
+        value:true,
+    },
     options:{
         controllerAnnoList:[
 
@@ -103,6 +107,7 @@ const data = reactive ({
         podAnnoList:[],
         podLabelList:[],
         nodeSelectorList:[],
+        serviceList:[],
     },
 })
 
@@ -228,6 +233,10 @@ const submitItem = (tag) => {
     useItemer.item.spec.selector.matchLabels = podLabelObj
 //处理调度配置
     useItemer.item.spec.template.spec.nodeSelector = listToObject(data.options.nodeSelectorList)
+    //处理自动添加Service
+    if (autoCreateService.value && props.resourseType == "Deployment"){
+        useItemer.item.spec.serviceName = useItemer.item.metadata.name
+    }
     submitHandler(tag)
 }
 
@@ -306,6 +315,25 @@ const initItemStructure = () => {
     });
 }
 
+//查询service列表
+const serviceChanged = async () => {
+        const getServiceListParam = {
+            clusterId: data.clusterId,
+            namespace: data.namespace,
+            labelSelector: "",
+            fieldSelector: ""
+        }
+        getServiceListApi(getServiceListParam).then((res) => {
+            console.log("获取到的service列表", res.data.items)
+            res.data.items.forEach(item => {
+                //如果service的clusterIP为None，则添加到serviceList中
+                if (item.spec.clusterIP == "None"){
+                    data.options.serviceList.push(item)
+                }
+            })
+        })
+}
+
 onBeforeMount(() => {
     initItemStructure();
     if(props.method !== 'add'){
@@ -381,7 +409,7 @@ onBeforeMount(() => {
                     <el-row :gutter="20">
                         <el-col :span="6">
                             <el-form-item label="名称" prop="item.metadata.name" >
-                                <el-input :disabled="props.method == 'update'" v-model.trim="item.metadata.name" placeholder="请输入Deployment名称"></el-input>
+                                <el-input :disabled="props.method == 'update'" v-model.trim="item.metadata.name" placeholder="请输入名称"></el-input>
                             </el-form-item>
                         </el-col>
 
@@ -480,7 +508,7 @@ onBeforeMount(() => {
 
                     <!-- 第三行 -->
                       <el-row :gutter="20">
-                        <el-col :span="12">
+                        <el-col :span="6">
                             <el-form-item label="更新方式" prop="spec.strategy" v-if="props.method !== 'update'">
                                 <el-radio-group v-model="autoCreateLabel">
                                     <el-radio value="true" size="large">自动生成</el-radio>
@@ -489,18 +517,31 @@ onBeforeMount(() => {
                             </el-form-item>
                         </el-col>
 
-                        <el-col :span="6" v-if="props.method !== 'update'">
-                            <el-form-item label="自动添加Service" prop="" >
+                        <el-col :span="12" v-if="props.method !== 'update'" >
+                            <el-form-item label="自动添加Service" prop="" v-if="props.resourseType == 'Deployment' || props.resourseType == 'DaemonSet'">
                                 <el-switch
-                                v-model="autoCreateService"
+                                v-model="autoCreateService.value"
                                 active-text="启用"
                                 inactive-text="禁用"
                                 >
                                 </el-switch>
                             </el-form-item>
+                            <el-form-item label="绑定Service" prop="" v-if="props.resourseType == 'StatefulSet'">
+                                <el-radio-group v-model="autoCreateService.value" @change="serviceChanged">
+                                    <el-radio :value="true" size="large">自动添加Service</el-radio>
+                                    <el-radio :value="false" size="large">手动绑定Service</el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6" v-if="!autoCreateService.value && props.resourseType == 'StatefulSet'">
+                            <el-form-item label="Service列表" prop="" >
+                                <el-select v-model="item.spec.serviceName" placeholder="请选择Service">
+                                    <el-option v-for="s in data.options.serviceList" :key="s.metadata.name" :label="s.metadata.name" :value="s.metadata.name"></el-option>
+                                </el-select>
+                            </el-form-item>
                         </el-col>
                       </el-row>
-
+<!--
                       <el-row :gutter="20">
                         <el-col :span="6">
                             <el-form-item label="最小内存" prop="item.resources.requests.memory" v-if="data.item.spec.template.spec.containers && data.item.spec.template.spec.containers[0].resources">
@@ -508,6 +549,7 @@ onBeforeMount(() => {
                             </el-form-item>
                         </el-col>
                       </el-row>
+-->
                 </div>
 
                 <!-- 这里是标签选择页面 -->
