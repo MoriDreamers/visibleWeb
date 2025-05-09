@@ -36,7 +36,7 @@ const colorEgg = () => {
   })
 };
 
-//用于默认展开菜单
+//用于默认展开菜单！！！
 const defaultOpenMenus = MenuConfig().map(menu => menu.index);
 
 </script>
